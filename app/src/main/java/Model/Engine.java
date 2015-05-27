@@ -1,8 +1,4 @@
-import java.text.Normalizer;
-
-import Model.Foraminifera;
-import Model.Point;
-import Model.Shell;
+package Model;
 
 /**
  * Created by mateu_000 on 2015-03-08.
