@@ -1,4 +1,10 @@
 package com.example.mateu_000.foraminifera;
+
+import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
+import android.os.SystemClock;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -6,98 +12,33 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
-import android.os.SystemClock;
-import android.util.Log;
-
-/**
- * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
- * renderers -- the static class GLES20 is used instead.
- */
 public class MyGLRenderer implements GLSurfaceView.Renderer
 {
-    /** Used for debug logs. */
-    private static final String TAG = "LessonTwoRenderer";
 
-    /**
-     * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
-     * of being located at the center of the universe) to world space.
-     */
-    private float[] mModelMatrix = new float[16];
-
-    /**
-     * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
-     * it positions things relative to our eye.
-     */
-    private float[] mViewMatrix = new float[16];
-
-    /** Store the projection matrix. This is used to project the scene onto a 2D viewport. */
-    private float[] mProjectionMatrix = new float[16];
-
-    /** Allocate storage for the final combined matrix. This will be passed into the shader program. */
-    private float[] mMVPMatrix = new float[16];
-
-    /**
-     * Stores a copy of the model matrix specifically for the light position.
-     */
-    private float[] mLightModelMatrix = new float[16];
-
-    /** Store our model data in a float buffer. */
     private final FloatBuffer mCubePositions;
     private final FloatBuffer mCubeColors;
     private final FloatBuffer mCubeNormals;
-
-    /** This will be used to pass in the transformation matrix. */
-    private int mMVPMatrixHandle;
-
-    /** This will be used to pass in the modelview matrix. */
-    private int mMVMatrixHandle;
-
-    /** This will be used to pass in the light position. */
-    private int mLightPosHandle;
-
-    /** This will be used to pass in model position information. */
-    private int mPositionHandle;
-
-    /** This will be used to pass in model color information. */
-    private int mColorHandle;
-
-    /** This will be used to pass in model normal information. */
-    private int mNormalHandle;
-
-    /** How many bytes per float. */
     private final int mBytesPerFloat = 4;
-
-    /** Size of the position data in elements. */
     private final int mPositionDataSize = 3;
-
-    /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
-
-    /** Size of the normal data in elements. */
     private final int mNormalDataSize = 3;
-
-    /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
-     *  we multiply this by our transformation matrices. */
     private final float[] mLightPosInModelSpace = new float[] {0.8f, 0.0f, 0.3f, 1.0f};
-
-    /** Used to hold the current position of the light in world space (after transformation via model matrix). */
     private final float[] mLightPosInWorldSpace = new float[4];
-
-    /** Used to hold the transformed position of the light in eye space (after transformation via modelview matrix) */
     private final float[] mLightPosInEyeSpace = new float[4];
-
-    /** This is a handle to our per-vertex cube shading program. */
+    private float[] mModelMatrix = new float[16];
+    private float[] mViewMatrix = new float[16];
+    private float[] mProjectionMatrix = new float[16];
+    private float[] mMVPMatrix = new float[16];
+    private float[] mLightModelMatrix = new float[16];
+    private int mMVPMatrixHandle;
+    private int mMVMatrixHandle;
+    private int mLightPosHandle;
+    private int mPositionHandle;
+    private int mColorHandle;
+    private int mNormalHandle;
     private int mPerVertexProgramHandle;
-
-    /** This is a handle to our light point program. */
     private int mPointProgramHandle;
 
-    /**
-     * Initialize the model data.
-     */
     public MyGLRenderer()
     {
         // Define points for a cube.
@@ -282,7 +223,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 
     protected String getVertexShader()
     {
-        // TODO: Explain why we normalize the vectors, explain some of the vector math behind it all. Explain what is eye space.
         final String vertexShader =
                 "uniform mat4 u_MVPMatrix;      \n"		// A constant representing the combined model/view/projection matrix.
                         + "uniform mat4 u_MVMatrix;       \n"		// A constant representing the combined model/view matrix.
@@ -337,13 +277,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config)
     {
-        // Set the background clear color to black.
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        // Use culling to remove back faces.
         GLES20.glEnable(GLES20.GL_CULL_FACE);
-
-        // Enable depth testing
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         // Position the eye in front of the origin.
@@ -449,25 +385,25 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
 
         // Draw some cubes.
-//        Matrix.setIdentityM(mModelMatrix, 0);
-//        Matrix.translateM(mModelMatrix, 0, 4.0f, 0.0f, -7.0f);
-//        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
-//        drawCube();
+        Matrix.setIdentityM(mModelMatrix, 0);
+        Matrix.translateM(mModelMatrix, 0, 4.0f, 0.0f, -7.0f);
+        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
+        drawCube();
 
-//        Matrix.setIdentityM(mModelMatrix, 0);
-//        Matrix.translateM(mModelMatrix, 0, -4.0f, 0.0f, -7.0f);
-//        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
-//        drawCube();
-//
-//        Matrix.setIdentityM(mModelMatrix, 0);
-//        Matrix.translateM(mModelMatrix, 0, 0.0f, 4.0f, -7.0f);
-//        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-//        drawCube();
-//
-//        Matrix.setIdentityM(mModelMatrix, 0);
-//        Matrix.translateM(mModelMatrix, 0, 0.0f, -4.0f, -7.0f);
-//        drawCube();
-//
+        Matrix.setIdentityM(mModelMatrix, 0);
+        Matrix.translateM(mModelMatrix, 0, -4.0f, 0.0f, -7.0f);
+        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+        drawCube();
+
+        Matrix.setIdentityM(mModelMatrix, 0);
+        Matrix.translateM(mModelMatrix, 0, 0.0f, 4.0f, -7.0f);
+        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        drawCube();
+
+        Matrix.setIdentityM(mModelMatrix, 0);
+        Matrix.translateM(mModelMatrix, 0, 0.0f, -4.0f, -7.0f);
+        drawCube();
+
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
@@ -574,7 +510,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
             // If the compilation failed, delete the shader.
             if (compileStatus[0] == 0)
             {
-                Log.e(TAG, "Error compiling shader: " + GLES20.glGetShaderInfoLog(shaderHandle));
+                //Log.e( "Error compiling shader: " + GLES20.glGetShaderInfoLog(shaderHandle));
                 GLES20.glDeleteShader(shaderHandle);
                 shaderHandle = 0;
             }
@@ -628,7 +564,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
             // If the link failed, delete the program.
             if (linkStatus[0] == 0)
             {
-                Log.e(TAG, "Error compiling program: " + GLES20.glGetProgramInfoLog(programHandle));
+                //Log.e(TAG, "Error compiling program: " + GLES20.glGetProgramInfoLog(programHandle));
                 GLES20.glDeleteProgram(programHandle);
                 programHandle = 0;
             }
