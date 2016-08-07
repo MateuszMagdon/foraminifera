@@ -2,14 +2,42 @@ package com.example.mateu_000.foraminifera;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.view.MotionEvent;
 
-/**
- * Created by mateu_000 on 2015-04-15.
- */
-class MyGLSurfaceView extends GLSurfaceView {
 
-    public MyGLSurfaceView(Context context){
+public class MyGLSurfaceView extends GLSurfaceView{
+    public MyGLRenderer mRenderer;
+
+    private float mDownX = 0.0f;
+    private float mDownY = 0.0f;
+
+    public MyGLSurfaceView(Context context) {
         super(context);
+//
+//        mRenderer = new MyGLRenderer();
+//        this.setRenderer(mRenderer);
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getActionMasked();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mDownX = event.getX();
+                mDownY = event.getY();
+                return true;
+            case MotionEvent.ACTION_UP:
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                float mX = event.getX();
+                float mY = event.getY();
+                mRenderer.mLightX += (mX-mDownX)/10;
+                mRenderer.mLightY -= (mY-mDownY)/10;
+                mDownX = mX;
+                mDownY = mY;
+                return true;
+            default:
+                return super.onTouchEvent(event);
+        }
     }
 }

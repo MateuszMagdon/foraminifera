@@ -6,33 +6,32 @@ import android.support.v7.app.ActionBarActivity;
 
 public class MainActivity extends ActionBarActivity
 {
-    private MyGLSurfaceView mGLSurfaceView;
+    private MyGLSurfaceView mGLSurfaceView2;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        mGLSurfaceView = new MyGLSurfaceView(this);
-
-        mGLSurfaceView.setEGLContextClientVersion(2);
-        mGLSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        mGLSurfaceView.setRenderer(new MyGLRenderer());
-
-        setContentView(mGLSurfaceView);
+        mGLSurfaceView2 = new MyGLSurfaceView(this);
+        mGLSurfaceView2.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        MyGLRenderer renderer = new MyGLRenderer();
+        mGLSurfaceView2.setRenderer(renderer);
+        mGLSurfaceView2.mRenderer = renderer;
+        setContentView(mGLSurfaceView2);
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        mGLSurfaceView.onResume();
+        //mGLSurfaceView.onResume();
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        mGLSurfaceView.onPause();
+        //mGLSurfaceView.onPause();
     }
 }
