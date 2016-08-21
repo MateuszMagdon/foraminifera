@@ -8,26 +8,32 @@ public class Point {
     public double y;
     public double z;
 
-    public Point() {
+    public Point(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public Point(double radius, double phi, double theta) {
+    public Point(double radius, double phi, double theta, Point offset) {
         double sinPhi = Math.sin(phi);
         double cosPhi = Math.cos(phi);
         double cosTheta = Math.cos(theta);
         double sinTheta = Math.sin(theta);
 
-        CalculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta);
+        CalculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
     }
 
-    public Point(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta){
-        CalculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta);
+    public Point(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta, Point offset){
+        CalculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
     }
 
-    private void CalculatePosition(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta) {
+    private void CalculatePosition(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta, Point offset) {
         x = radius * sinPhi * cosTheta;
+        x += offset.x;
         y = radius * sinPhi * sinTheta;
+        y += offset.y;
         z = radius * cosPhi;
+        z += offset.z;
     }
 
     public float[] AsFloatArray(){

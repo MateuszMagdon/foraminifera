@@ -84,9 +84,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         + "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        \n"
                         // Calculate the dot product of the light vector and vertex normal. If the normal and light vector are
                         // pointing in the same direction then it will get max illumination.
-                        + "   float diffuse = max(dot(modelViewNormal, lightVector), 3.0f);       \n"
+                        + "   float diffuse = max(dot(modelViewNormal, lightVector), 2.5f);       \n"
                         // Attenuate the light based on distance.
-                        + "   diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance)));  \n"
+                        + "   diffuse = diffuse * (1.0 / (1.0 + (0.2 * distance * distance)));  \n"
                         // Multiply the color by the illumination level. It will be interpolated across the triangle.
                         + "   v_Color = vec4(1.0, 0.0, 0.0, 0.0) * diffuse; \n"
                         // gl_Position is a special variable used to store the final position.
@@ -224,8 +224,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mDeltaX = 0.0f;
         mDeltaY = 0.0f;
 
-        // Multiply the current rotation by the accumulated rotation, and then set the accumulated
-        // rotation to the result.
         Matrix.multiplyMM(mAccumulatedRotation, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
 
         // Rotate the cube taking the overall rotation into account.

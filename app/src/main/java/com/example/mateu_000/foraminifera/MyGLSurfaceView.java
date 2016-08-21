@@ -2,6 +2,7 @@ package com.example.mateu_000.foraminifera;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.view.DragEvent;
 import android.view.MotionEvent;
 
 
@@ -25,9 +26,9 @@ public class MyGLSurfaceView extends GLSurfaceView{
         super.setRenderer(renderer);
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
 
         if (event != null)
         {
@@ -57,4 +58,10 @@ public class MyGLSurfaceView extends GLSurfaceView{
         }
     }
 
+
+
+    @Override
+    public boolean onDragEvent(DragEvent event) {
+        return super.onDragEvent(event);
+    }
 }
