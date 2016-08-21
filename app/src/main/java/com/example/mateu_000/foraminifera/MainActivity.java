@@ -9,7 +9,6 @@ import android.util.DisplayMetrics;
 
 public class MainActivity extends Activity
 {
-    /** Hold a reference to our GLSurfaceView */
     private MyGLSurfaceView mGLSurfaceView;
     private MyGLRenderer mRenderer;
 
@@ -20,7 +19,6 @@ public class MainActivity extends Activity
 
         mGLSurfaceView = new MyGLSurfaceView(this);
 
-        // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
@@ -38,8 +36,6 @@ public class MainActivity extends Activity
         }
         else
         {
-            // This is where you could create an OpenGL ES 1.x compatible
-            // renderer if you wanted to support both ES 1 and ES 2.
             return;
         }
 
