@@ -2,7 +2,6 @@ package com.example.mateu_000.foraminifera;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
 
@@ -28,6 +27,7 @@ public class MyGLSurfaceView extends GLSurfaceView{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
 
         if (event != null)
         {

@@ -11,6 +11,8 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
 
+import Model.Point;
+
 public class MyGLRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "MainRenderer";
 
@@ -28,6 +30,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] mProjectionMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
+    private float[] mAccumulatedRotation = new float[16];
+    private float[] mCurrentRotation = new float[16];
+
     private final float[] mLightInitialPosition = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
     private final float[] mLightCalculatedPosition = new float[4];
     private final float[] mLightPosInEyeSpace = new float[4];
@@ -38,7 +43,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        GLES20.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        GLES20.glClearColor(0.3f, 0.6f, 0.3f, 1.0f);
 
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -79,7 +84,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         + "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        \n"
                         // Calculate the dot product of the light vector and vertex normal. If the normal and light vector are
                         // pointing in the same direction then it will get max illumination.
-                        + "   float diffuse = max(dot(modelViewNormal, lightVector), 2.0f);       \n"
+                        + "   float diffuse = max(dot(modelViewNormal, lightVector), 3.0f);       \n"
                         // Attenuate the light based on distance.
                         + "   diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance)));  \n"
                         // Multiply the color by the illumination level. It will be interpolated across the triangle.
@@ -144,6 +149,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         final float far = 10.0f;
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+
+        Matrix.setIdentityM(mAccumulatedRotation, 0);
     }
 
     @Override
@@ -153,17 +160,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         prepareShaderInputHandlers();
 
-        long time = SystemClock.uptimeMillis() % 10000L;
-        float lightRorationAngle = (360.0f / 1000.0f) * ((int) time);
-        iluminateScene(lightRorationAngle);
+        iluminateScene();
 
-        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        Matrix.translateM(mModelMatrix, 0, 1.0f, 0.0f, 0.0f);
-        drawSphere();
-
+        drawSphere(1.0f, 10, new Point(0.0, 0.0, 0.0));
+        drawSphere(1.2f, 10, new Point(1.0, 1.0, 0.0));
+        drawSphere(1.5f, 10, new Point(1.0, 1.0, -1.0));
     }
 
     private void prepareShaderInputHandlers() {
@@ -173,25 +174,27 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mPositionHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Position");
     }
 
-    private void iluminateScene(float lightRorationAngle) {
+    private void iluminateScene() {
+        long time = SystemClock.uptimeMillis() % 10000L;
+        float lightRotationAngle = (360.0f / 1000.0f) * ((int) time);
+
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(mModelMatrix, 0, -lightRorationAngle, 0.0f, 1.0f, 0.0f);
+        //Matrix.rotateM(mModelMatrix, 0, -lightRotationAngle, 0.0f, 1.0f, 0.0f);
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
-
-//        Matrix.rotateM(mModelMatrix, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
-//        Matrix.rotateM(mModelMatrix, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
-//        mDeltaX = 0.0f;
-//        mDeltaY = 0.0f;
 
         Matrix.multiplyMV(mLightCalculatedPosition, 0, mModelMatrix, 0, mLightInitialPosition, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightCalculatedPosition, 0);
     }
 
-    public void drawSphere() {
+    public void drawSphere(double radius, int stepSize, Point center) {
+        translateModelToView();
+
+        handleRotation();
+
         //SphereVertices sphere = new SphereVertices(2.0f, 3);
-        SphereTriangles sphere = new SphereTriangles(1.0f, 3);
+        Sphere sphere = new Sphere(radius, stepSize, center);
         FloatBuffer spherePositions = sphere.sphereVerticesBuffer;
         spherePositions.position(0);
 
@@ -207,6 +210,26 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, sphere.pointsCount);
+    }
+
+    private void translateModelToView() {
+        Matrix.setIdentityM(mModelMatrix, 0);
+        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
+    }
+
+    private void handleRotation() {
+        Matrix.setIdentityM(mCurrentRotation, 0);
+        Matrix.rotateM(mCurrentRotation, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
+        mDeltaX = 0.0f;
+        mDeltaY = 0.0f;
+
+        // Multiply the current rotation by the accumulated rotation, and then set the accumulated
+        // rotation to the result.
+        Matrix.multiplyMM(mAccumulatedRotation, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
+
+        // Rotate the cube taking the overall rotation into account.
+        Matrix.multiplyMM(mModelMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
     }
 
 
