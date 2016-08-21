@@ -366,29 +366,29 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         mPerVertexProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
                 new String[] {"a_Position",  "a_Color", "a_Normal"});
 
-//        // Define a simple shader program for our point.
-//        final String pointVertexShader =
-//                "uniform mat4 u_MVPMatrix;      \n"
-//                        +	"attribute vec4 a_Position;     \n"
-//                        + "void main()                    \n"
-//                        + "{                              \n"
-//                        + "   gl_Position = u_MVPMatrix   \n"
-//                        + "               * a_Position;   \n"
-//                        + "   gl_PointSize = 40.0;         \n"
-//                        + "}                              \n";
-//
-//        final String pointFragmentShader =
-//                "precision mediump float;       \n"
-//                        + "void main()                    \n"
-//                        + "{                              \n"
-//                        + "   gl_FragColor = vec4(1.0,    \n"
-//                        + "   0.0, 0.0, 0.0);             \n"
-//                        + "}                              \n";
-//
-//        final int pointVertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, pointVertexShader);
-//        final int pointFragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, pointFragmentShader);
-//        mPointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle,
-//                new String[] {"a_Position"});
+        // Define a simple shader program for our point.
+        final String pointVertexShader =
+                "uniform mat4 u_MVPMatrix;      \n"
+                        +	"attribute vec4 a_Position;     \n"
+                        + "void main()                    \n"
+                        + "{                              \n"
+                        + "   gl_Position = u_MVPMatrix   \n"
+                        + "               * a_Position;   \n"
+                        + "   gl_PointSize = 20.0;         \n"
+                        + "}                              \n";
+
+        final String pointFragmentShader =
+                "precision mediump float;       \n"
+                        + "void main()                    \n"
+                        + "{                              \n"
+                        + "   gl_FragColor = vec4(1.0,    \n"
+                        + "   0.0, 0.0, 0.0);             \n"
+                        + "}                              \n";
+
+        final int pointVertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, pointVertexShader);
+        final int pointFragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, pointFragmentShader);
+        mPointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle,
+                new String[] {"a_Position"});
     }
 
     private void SetProjectionMatrix() {
@@ -463,22 +463,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightCalculatedPosition, 0);
 
         // Draw some cubes.
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 4.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, -2*angleInDegrees, 1.0f, 1.0f, 1.0f);
-        drawCube();
+//        Matrix.setIdentityM(mModelMatrix, 0);
+//        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
+//        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+//        Matrix.translateM(mModelMatrix, 0, 0.0f, 4.0f, 0.0f);
+//        Matrix.rotateM(mModelMatrix, 0, -2*angleInDegrees, 1.0f, 1.0f, 1.0f);
+//        drawCube();
+//
+//
+//        Matrix.setIdentityM(mModelMatrix, 0);
+//        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
+//        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
+//        drawCube();
 
 
         Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
-        drawCube();
-
-
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -1.0f);
+        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -4.0f);
+        GLES20.glUseProgram(mPointProgramHandle);
         drawSphere();
 
         // Draw a point to indicate the light.
@@ -488,26 +489,29 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 
 
     public void drawSphere() {
-        SphereVertices sphere = new SphereVertices(2.0f, 30);
-        FloatBuffer spherePositions = sphere.sphereVertex;
+        final int pointMVPMatrixHandle = GLES20.glGetUniformLocation(mPointProgramHandle, "u_MVPMatrix");
+        final int pointPositionHandle = GLES20.glGetAttribLocation(mPointProgramHandle, "a_Position");
 
+        //SphereVertices sphere = new SphereVertices(2.0f, 3);
+        SphereTriangles sphere = new SphereTriangles(1.0f, 3);
+        FloatBuffer spherePositions = sphere.sphereVerticesBuffer;
         spherePositions.position(0);
-        GLES20.glVertexAttribPointer(mPositionHandle, 1, GLES20.GL_FLOAT, false, 0, spherePositions);
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+        GLES20.glVertexAttribPointer(pointPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false, 0, spherePositions);
+        GLES20.glEnableVertexAttribArray(pointPositionHandle);
         //to chyba nei zasziala - trzeba dodac dodatkowe shadery dla sfery
 
         Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-        GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        GLES20.glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
         GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
 
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, sphere.pointsCount);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, sphere.pointsCount);
 
 //        gl.glFrontFace(GL10.GL_CW);
 //        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-//        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, sphere.sphereVertex);
+//        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, sphere.sphereVerticesBuffer);
 //
 //        gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 //        gl.glDrawArrays(GL10.GL_POINTS, 0, sphere.pointsCount);
