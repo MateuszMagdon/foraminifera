@@ -11,14 +11,10 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class MyGLRenderer implements GLSurfaceView.Renderer
-{
+public class MyGLRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "MainRenderer";
 
-    private float[] mModelMatrix = new float[16];
-    private float[] mViewMatrix = new float[16];
-    private float[] mProjectionMatrix = new float[16];
-    private float[] mMVPMatrix = new float[16];
+    private int mPerVertexProgramHandle;
 
     private int mMVPMatrixHandle;
     private int mMVMatrixHandle;
@@ -27,15 +23,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 
     private final int mPositionDataSize = 3;
 
+    private float[] mModelMatrix = new float[16];
+    private float[] mViewMatrix = new float[16];
+    private float[] mProjectionMatrix = new float[16];
+    private float[] mMVPMatrix = new float[16];
+
     private final float[] mLightInitialPosition = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
     private final float[] mLightCalculatedPosition = new float[4];
     private final float[] mLightPosInEyeSpace = new float[4];
 
-    private int mPerVertexProgramHandle;
+    public volatile float mDeltaX;
+    public volatile float mDeltaY;
+
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config)
-    {
+    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         GLES20.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
         GLES20.glEnable(GLES20.GL_CULL_FACE);
@@ -127,8 +129,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     }
 
     @Override
-    public void onSurfaceChanged(GL10 glUnused, int width, int height)
-    {
+    public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         // Set the OpenGL viewport to the same size as the surface.
         GLES20.glViewport(0, 0, width, height);
 
@@ -146,8 +147,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     }
 
     @Override
-    public void onDrawFrame(GL10 glUnused)
-    {
+    public void onDrawFrame(GL10 glUnused) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glUseProgram(mPerVertexProgramHandle);
 
@@ -179,6 +179,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
         Matrix.rotateM(mModelMatrix, 0, -lightRorationAngle, 0.0f, 1.0f, 0.0f);
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
+
+//        Matrix.rotateM(mModelMatrix, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
+//        Matrix.rotateM(mModelMatrix, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
+//        mDeltaX = 0.0f;
+//        mDeltaY = 0.0f;
 
         Matrix.multiplyMV(mLightCalculatedPosition, 0, mModelMatrix, 0, mLightInitialPosition, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightCalculatedPosition, 0);
@@ -212,8 +217,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
      * @param shaderSource The shader source code.
      * @return An OpenGL handle to the shader.
      */
-    private int compileShader(final int shaderType, final String shaderSource)
-    {
+    private int compileShader(final int shaderType, final String shaderSource) {
         int shaderHandle = GLES20.glCreateShader(shaderType);
 
         if (shaderHandle != 0)
@@ -253,8 +257,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
      * @param attributes Attributes that need to be bound to the program.
      * @return An OpenGL handle to the program.
      */
-    private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes)
-    {
+    private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle,
+                                     final String[] attributes) {
         int programHandle = GLES20.glCreateProgram();
 
         if (programHandle != 0)

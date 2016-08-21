@@ -1,43 +1,60 @@
-//package com.example.mateu_000.foraminifera;
-//
-//import android.content.Context;
-//import android.opengl.GLSurfaceView;
-//import android.view.MotionEvent;
-//
-//
-//public class MyGLSurfaceView extends GLSurfaceView{
-//    public MyGLRenderer mRenderer;
-//
-//    private float mDownX = 0.0f;
-//    private float mDownY = 0.0f;
-//
-//    public MyGLSurfaceView(Context context) {
-//        super(context);
-////
-////        mRenderer = new MyGLRenderer();
-////        this.setRenderer(mRenderer);
-//    }
-//
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        int action = event.getActionMasked();
-//        switch (action) {
-//            case MotionEvent.ACTION_DOWN:
-//                mDownX = event.getX();
-//                mDownY = event.getY();
-//                return true;
-//            case MotionEvent.ACTION_UP:
-//                return true;
-//            case MotionEvent.ACTION_MOVE:
-//                float mX = event.getX();
-//                float mY = event.getY();
-//                mRenderer.mLightX += (mX-mDownX)/10;
-//                mRenderer.mLightY -= (mY-mDownY)/10;
-//                mDownX = mX;
-//                mDownY = mY;
-//                return true;
-//            default:
-//                return super.onTouchEvent(event);
-//        }
-//    }
-//}
+package com.example.mateu_000.foraminifera;
+
+import android.content.Context;
+import android.opengl.GLSurfaceView;
+import android.util.DisplayMetrics;
+import android.view.MotionEvent;
+
+
+public class MyGLSurfaceView extends GLSurfaceView{
+    public MyGLRenderer mRenderer;
+
+    private float mPreviousX = 0.0f;
+    private float mPreviousY = 0.0f;
+
+    private float mDensity;
+
+    public MyGLSurfaceView(Context context) {
+        super(context);
+    }
+
+    // Hides superclass method.
+    public void setRenderer(MyGLRenderer renderer, float density)
+    {
+        mRenderer = renderer;
+        mDensity = density;
+        super.setRenderer(renderer);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if (event != null)
+        {
+            float x = event.getX();
+            float y = event.getY();
+
+            if (event.getAction() == MotionEvent.ACTION_MOVE)
+            {
+                if (mRenderer != null)
+                {
+                    float deltaX = (x - mPreviousX) / mDensity / 2f;
+                    float deltaY = (y - mPreviousY) / mDensity / 2f;
+
+                    mRenderer.mDeltaX += deltaX;
+                    mRenderer.mDeltaY += deltaY;
+                }
+            }
+
+            mPreviousX = x;
+            mPreviousY = y;
+
+            return true;
+        }
+        else
+        {
+            return super.onTouchEvent(event);
+        }
+    }
+
+}

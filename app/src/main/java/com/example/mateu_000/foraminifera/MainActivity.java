@@ -5,18 +5,20 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 public class MainActivity extends Activity
 {
     /** Hold a reference to our GLSurfaceView */
-    private GLSurfaceView mGLSurfaceView;
+    private MyGLSurfaceView mGLSurfaceView;
+    private MyGLRenderer mRenderer;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        mGLSurfaceView = new GLSurfaceView(this);
+        mGLSurfaceView = new MyGLSurfaceView(this);
 
         // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -28,8 +30,11 @@ public class MainActivity extends Activity
             // Request an OpenGL ES 2.0 compatible context.
             mGLSurfaceView.setEGLContextClientVersion(2);
 
-            // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(new MyGLRenderer());
+            final DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+            mRenderer = new MyGLRenderer();
+            mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
         }
         else
         {
