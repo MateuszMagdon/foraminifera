@@ -42,6 +42,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public volatile float mDeltaRotationY;
     public volatile float mDeltaTranslationX;
     public volatile float mDeltaTranslationY;
+    public volatile float mScaleFactor = 1.0f;
 
 
     @Override
@@ -91,7 +92,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         // Attenuate the light based on distance.
                         + "   diffuse = diffuse * (1.0 / (1.0 + (0.2 * distance * distance)));  \n"
                         // Multiply the color by the illumination level. It will be interpolated across the triangle.
-                        + "   v_Color = vec4(1.0, 0.0, 0.0, 0.0) * diffuse; \n"
+                        + "   v_Color = vec4(1.0, 0.498039, 0.0, 1.0) * diffuse; \n"
                         // gl_Position is a special variable used to store the final position.
                         // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
                         + "   gl_Position = u_MVPMatrix * a_Position;                            \n"
@@ -195,6 +196,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void drawSphere(double radius, int stepSize, Point center) {
         translateModelToView();
 
+        handleScale();
         handleRotation();
         handleTranslation();
 
@@ -223,6 +225,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
     }
 
+    private void handleScale() {
+        Matrix.scaleM(mModelMatrix, 0, mScaleFactor, mScaleFactor, mScaleFactor);
+    }
+
     private void handleRotation() {
         Matrix.setIdentityM(mCurrentRotation, 0);
         Matrix.rotateM(mCurrentRotation, 0, mDeltaRotationX, 0.0f, 1.0f, 0.0f);
@@ -231,8 +237,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mDeltaRotationY = 0.0f;
 
         Matrix.multiplyMM(mAccumulatedRotation, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-
-        // Rotate the cube taking the overall rotation into account.
         Matrix.multiplyMM(mModelMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
     }
 
@@ -242,8 +246,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mDeltaTranslationX = 0.0f;
         mDeltaTranslationY = 0.0f;
 
-
-        // Rotate the cube taking the overall rotation into account.
         Matrix.multiplyMM(mViewMatrix, 0, mViewMatrix, 0, mCurrentTranslation, 0);
     }
 
