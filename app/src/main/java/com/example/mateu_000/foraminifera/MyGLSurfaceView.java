@@ -2,7 +2,6 @@ package com.example.mateu_000.foraminifera;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 
 
@@ -30,38 +29,30 @@ public class MyGLSurfaceView extends GLSurfaceView{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (event != null)
-        {
-            float x = event.getX();
-            float y = event.getY();
+        float x = event.getX();
+        float y = event.getY();
 
-            if (event.getAction() == MotionEvent.ACTION_MOVE)
-            {
-                if (mRenderer != null)
-                {
-                    float deltaX = (x - mPreviousX) / mDensity / 2f;
-                    float deltaY = (y - mPreviousY) / mDensity / 2f;
+        int pointerCount = event.getPointerCount();
 
-                    mRenderer.mDeltaX += deltaX;
-                    mRenderer.mDeltaY += deltaY;
+        switch (event.getAction()){
+            case MotionEvent.ACTION_MOVE:
+                float deltaX = (x - mPreviousX) / mDensity / 2f;
+                float deltaY = (y - mPreviousY) / mDensity / 2f;
+
+                if (pointerCount == 1){
+                    mRenderer.mDeltaRotationX += deltaX;
+                    mRenderer.mDeltaRotationY += deltaY;
+                } else {
+                    mRenderer.mDeltaTranslationX += deltaX/15;
+                    mRenderer.mDeltaTranslationY += deltaY/15;
                 }
-            }
 
-            mPreviousX = x;
-            mPreviousY = y;
+        }
+        mPreviousX = x;
+        mPreviousY = y;
 
-            return true;
-        }
-        else
-        {
-            return super.onTouchEvent(event);
-        }
+        return true;
     }
 
 
-
-    @Override
-    public boolean onDragEvent(DragEvent event) {
-        return super.onDragEvent(event);
-    }
 }

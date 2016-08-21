@@ -32,13 +32,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private float[] mAccumulatedRotation = new float[16];
     private float[] mCurrentRotation = new float[16];
+    private float[] mCurrentTranslation = new float[16];
 
     private final float[] mLightInitialPosition = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
     private final float[] mLightCalculatedPosition = new float[4];
     private final float[] mLightPosInEyeSpace = new float[4];
 
-    public volatile float mDeltaX;
-    public volatile float mDeltaY;
+    public volatile float mDeltaRotationX;
+    public volatile float mDeltaRotationY;
+    public volatile float mDeltaTranslationX;
+    public volatile float mDeltaTranslationY;
 
 
     @Override
@@ -151,6 +154,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
 
         Matrix.setIdentityM(mAccumulatedRotation, 0);
+        Matrix.setIdentityM(mCurrentTranslation, 0);
     }
 
     @Override
@@ -192,6 +196,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         translateModelToView();
 
         handleRotation();
+        handleTranslation();
+
 
         //SphereVertices sphere = new SphereVertices(2.0f, 3);
         Sphere sphere = new Sphere(radius, stepSize, center);
@@ -219,15 +225,26 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private void handleRotation() {
         Matrix.setIdentityM(mCurrentRotation, 0);
-        Matrix.rotateM(mCurrentRotation, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
-        mDeltaX = 0.0f;
-        mDeltaY = 0.0f;
+        Matrix.rotateM(mCurrentRotation, 0, mDeltaRotationX, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, mDeltaRotationY, 1.0f, 0.0f, 0.0f);
+        mDeltaRotationX = 0.0f;
+        mDeltaRotationY = 0.0f;
 
         Matrix.multiplyMM(mAccumulatedRotation, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
 
         // Rotate the cube taking the overall rotation into account.
         Matrix.multiplyMM(mModelMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
+    }
+
+    private void handleTranslation() {
+        Matrix.setIdentityM(mCurrentTranslation, 0);
+        Matrix.translateM(mCurrentTranslation, 0, mDeltaTranslationX, -mDeltaTranslationY, 0.0f);
+        mDeltaTranslationX = 0.0f;
+        mDeltaTranslationY = 0.0f;
+
+
+        // Rotate the cube taking the overall rotation into account.
+        Matrix.multiplyMM(mViewMatrix, 0, mViewMatrix, 0, mCurrentTranslation, 0);
     }
 
 
