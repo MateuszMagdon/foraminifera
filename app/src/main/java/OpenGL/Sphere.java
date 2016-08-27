@@ -9,9 +9,11 @@ import java.util.List;
 
 import Helpers.PointFactory;
 import Model.Point;
+import Model.Vector;
 
 public class Sphere {
     private final PointFactory pointFactory;
+    private final Vector scaleRate;
     public int pointsCount = 0;
     public FloatBuffer sphereVerticesBuffer;
     public List<Point> points = new LinkedList<>();
@@ -26,10 +28,12 @@ public class Sphere {
     private double radius;
     private double delta;
 
-    public Sphere(double radius, Point center) {
+    public Sphere(double radius, Point center, Vector scaleRate) {
         this.radius = radius;
         this.center = center;
-        pointFactory = new PointFactory(radius, center);
+        this.scaleRate = scaleRate;
+
+        pointFactory = new PointFactory(radius, center, scaleRate);
         
         delta = stepSize * degree;
 

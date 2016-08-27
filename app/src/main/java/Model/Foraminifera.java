@@ -5,11 +5,12 @@ import java.util.LinkedList;
 import Helpers.SettingsContainer;
 
 public class Foraminifera {
-    public LinkedList<Shell> shells;
+    private final Vector scaleVector;
+    public LinkedList<Shell> shells = new LinkedList<>();
 
     public Foraminifera()
     {
-        shells = new LinkedList<>();
+        scaleVector = new Vector(2, SettingsContainer.scaleY, SettingsContainer.scaleZ);
 
         shells.add(createInitialShell());
     }
@@ -25,7 +26,7 @@ public class Foraminifera {
         double nextRadius = calculateRadius(previousShell);
         double nextThickness = calculateThickness(previousShell);
 
-        Shell nextShell = new Shell(nextCenter, nextRadius, nextThickness, previousShell);
+        Shell nextShell = new Shell(nextCenter, nextRadius, nextThickness, previousShell, scaleVector);
         shells.add(nextShell);
     }
 
@@ -39,7 +40,7 @@ public class Foraminifera {
 
     private Point calculateCenterPosition(Shell previousShell) {
         Vector growthVector = calculateGrowthVector(previousShell);
-        return previousShell.aperturePosition.addVector(growthVector);
+        return previousShell.aperturePosition.AddVector(growthVector);
     }
 
     private Vector calculateGrowthVector(Shell previousShell) {

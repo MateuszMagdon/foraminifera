@@ -10,6 +10,8 @@ public class Shell {
     public double radius;
     public double thickness;
 
+    public Vector scaleRate;
+
     public Vector axisVector;
 
     public Sphere innerSphere;
@@ -18,30 +20,33 @@ public class Shell {
     public Shell()
     {
         center = new Point(0, 0, 0);
-        thickness = 0.02d;
         radius = 1.0d;
+        thickness = 0.02d;
+        scaleRate = new Vector(1.0d, 1.0d, 1.0d);
 
-        createOpenGLSperes();
+        createOpenGLSpheres();
 
         aperturePosition = new Point(0, 1, 0);
-        this.axisVector = aperturePosition.getVector(center);
+        this.axisVector = aperturePosition.GetVector(center);
     }
 
-    public Shell(Point center, double radius, double thickness, Shell previousShell)
+    public Shell(Point center, double radius, double thickness, Shell previousShell, Vector scaleRate)
     {
         this.center = center;
         this.radius = radius;
         this.thickness = thickness;
 
-        createOpenGLSperes();
+        this.scaleRate = scaleRate;
+
+        createOpenGLSpheres();
 
         this.aperturePosition = calculateAperturePosition(previousShell);
-        this.axisVector = aperturePosition.getVector(previousShell.aperturePosition);
+        this.axisVector = aperturePosition.GetVector(previousShell.aperturePosition);
     }
 
-    private void createOpenGLSperes() {
-        innerSphere = new Sphere(radius, center);
-        outerSphere = new Sphere(radius + thickness, center);
+    private void createOpenGLSpheres() {
+        innerSphere = new Sphere(radius, center, scaleRate);
+        outerSphere = new Sphere(radius + thickness, center, scaleRate);
     }
 
     private Point calculateAperturePosition(Shell previousShell) {
@@ -49,7 +54,7 @@ public class Shell {
         double minDistance = 0;
 
         for (Point point : outerSphere.points) {
-            double distance = point.getDistance(previousShell.center);
+            double distance = point.GetDistance(previousShell.center);
             double previousOuterRadius = previousShell.radius + previousShell.thickness;
             if (distance > previousOuterRadius){
                 if (min == null || distance < minDistance){

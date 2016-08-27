@@ -6,11 +6,12 @@ public class SettingsContainer {
         //1 to stykające się sfery - v = newRadius
     public static double growthFactor = 1.1; //radius times this = new radius
     public static double thicknessGrowthFactor = 1.1; //thickness times this = new thickness
-    public static double deviationAngle = Math.PI / 10; //odgiecie od osi wzrostu
-    public static double rotationAngle = Math.PI / 10; //-180 - 180 rotacja odgietej osi
+    public static double deviationAngle = Math.PI / 10;
+    public static double rotationAngle = Math.PI / 10;
 
-    //wszystkie scale >1
-    public static double scaleX;
-    public static double scaleY;
-    public static double scaleZ;
+
+    //> 1.0
+    public static double scaleX = 1.0;
+    public static double scaleY = 1.0;
+    public static double scaleZ = 1.0;
 }

@@ -34,8 +34,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] mAccumulatedRotation = new float[16];
 
     private final float[] mInnerSphereColor = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
-    private final float[] mOuterSphereColor = new float[] {1.0f, 0.498038f, 0.0f, 1.0f};
-    private final float[] mLightInitialPosition = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+    private final float[] mOuterSphereColor = new float[] {1.0f, 0.498038f, 0.0f, 0.1f};
+
+    private final float[] mBackgroundColor = new float[] {0.3f, 0.6f, 0.3f, 1.0f};
+
+    private final float[] mLightInitialPosition = new float[] {0.0f, 0.0f, 4.0f, 1.0f};
     private final float[] mLightCalculatedPosition = new float[4];
     private final float[] mLightPosInEyeSpace = new float[4];
 
@@ -48,7 +51,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        GLES20.glClearColor(0.3f, 0.6f, 0.3f, 1.0f);
+        GLES20.glClearColor(mBackgroundColor[0], mBackgroundColor[1], mBackgroundColor[2], mBackgroundColor[3]);
 
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -138,9 +141,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
+        //Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
         //Matrix.rotateM(mModelMatrix, 0, -lightRotationAngle, 0.0f, 1.0f, 0.0f);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
+        //Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
 
         Matrix.multiplyMV(mLightCalculatedPosition, 0, mModelMatrix, 0, mLightInitialPosition, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightCalculatedPosition, 0);

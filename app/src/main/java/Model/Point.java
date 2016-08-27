@@ -17,20 +17,27 @@ public class Point {
         double cosTheta = Math.cos(theta);
         double sinTheta = Math.sin(theta);
 
-        CalculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
+        calculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
     }
 
     public Point(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta, Point offset){
-        CalculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
+        calculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
     }
 
-    private void CalculatePosition(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta, Point offset) {
+    private void calculatePosition(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta, Point offset) {
         x = radius * sinPhi * cosTheta;
         x += offset.x;
         y = radius * sinPhi * sinTheta;
         y += offset.y;
         z = radius * cosPhi;
         z += offset.z;
+    }
+
+    public Point ScalePointPosition(Vector scalingVector){
+        x *= scalingVector.x;
+        y *= scalingVector.y;
+        z *= scalingVector.z;
+        return this;
     }
 
     public float[] AsFloatArray(){
@@ -42,7 +49,7 @@ public class Point {
         return result;
     }
 
-    public Point addVector(Vector vector){
+    public Point AddVector(Vector vector){
         double x = this.x + vector.x;
         double y = this.y + vector.y;
         double z = this.z + vector.z;
@@ -50,11 +57,11 @@ public class Point {
         return new Point(x, y, z);
     }
 
-    public Vector getVector(Point basePoint){
+    public Vector GetVector(Point basePoint){
         return new Vector(x - basePoint.x, y - basePoint.y, z - basePoint.z);
     }
 
-    public double getDistance(Point point){
+    public double GetDistance(Point point){
         double v = x - point.x;
         double u = y - point.y;
         double w = z - point.z;
