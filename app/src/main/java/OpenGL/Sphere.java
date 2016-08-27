@@ -14,6 +14,8 @@ public class Sphere {
     public FloatBuffer sphereVerticesBuffer;
     public List<Point> points = new LinkedList<>();
 
+    private static final int stepSize = 10;
+
     private static final int pointsPerVertex = 3;
     private static final int floatSize = Float.SIZE / Byte.SIZE;
     private static final double degree = Math.ceil(100 * Math.PI/180) / 100;
@@ -22,7 +24,7 @@ public class Sphere {
     private double radius;
     private double delta;
 
-    public Sphere(double radius, int stepSize, Point center) {
+    public Sphere(double radius, Point center) {
         this.radius = radius;
         this.center = center;
         delta = stepSize * degree;

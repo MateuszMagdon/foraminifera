@@ -11,7 +11,9 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
 
+import Model.Foraminifera;
 import Model.Point;
+import Model.Shell;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "MainRenderer";
@@ -117,9 +119,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         iluminateScene();
 
-        drawSphere(1.0f, 10, new Point(0.0, 0.0, 0.0));
-        drawSphere(1.2f, 10, new Point(1.0, 1.0, 0.0));
-        drawSphere(1.5f, 10, new Point(1.0, 1.0, -1.0));
+        drawForaminifera();
+//        drawSphere(1.0f, new Point(0.0, 0.0, 0.0));
+//        drawSphere(1.2f, new Point(1.0, 1.0, 0.0));
+//        drawSphere(1.5f, new Point(1.0, 1.0, -1.0));
     }
 
     private void prepareShaderInputHandlers() {
@@ -143,14 +146,25 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightCalculatedPosition, 0);
     }
 
-    private void drawSphere(double radius, int stepSize, Point center) {
+    private void drawForaminifera() {
+        Foraminifera foram = new Foraminifera();
+        foram.addNextShell();
+//        foram.addNextShell();
+//        foram.addNextShell();
+
+        for (Shell shell : foram.shells) {
+            drawSphere(shell.outerSphere);
+        }
+    }
+
+    private void drawSphere(Sphere sphere) {
         translateModelToView();
 
         handleScale();
         handleRotation();
         handleTranslation();
 
-        Sphere sphere = new Sphere(radius, stepSize, center);
+
         FloatBuffer spherePositions = sphere.sphereVerticesBuffer;
         spherePositions.position(0);
 
