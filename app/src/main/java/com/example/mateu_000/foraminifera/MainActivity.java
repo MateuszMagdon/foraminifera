@@ -3,9 +3,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+
+import OpenGL.MyGLRenderer;
+import OpenGL.MyGLSurfaceView;
 
 public class MainActivity extends Activity
 {

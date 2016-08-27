@@ -1,4 +1,4 @@
-package com.example.mateu_000.foraminifera;
+package OpenGL;
 
 import java.nio.FloatBuffer;
 
@@ -70,12 +70,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Position the eye in front of the origin.
         final float eyeX = 0.0f;
         final float eyeY = 0.0f;
-        final float eyeZ = 0.0f;
+        final float eyeZ = 7.0f;
 
         // We are looking toward the distance
         final float lookX = 0.0f;
         final float lookY = 0.0f;
-        final float lookZ = -8.0f;
+        final float lookZ = 0.0f;
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
         final float upX = 0.0f;
@@ -135,7 +135,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
+        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
         //Matrix.rotateM(mModelMatrix, 0, -lightRotationAngle, 0.0f, 1.0f, 0.0f);
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
 
@@ -143,15 +143,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightCalculatedPosition, 0);
     }
 
-    public void drawSphere(double radius, int stepSize, Point center) {
+    private void drawSphere(double radius, int stepSize, Point center) {
         translateModelToView();
 
         handleScale();
         handleRotation();
         handleTranslation();
 
-
-        //SphereVertices sphere = new SphereVertices(2.0f, 3);
         Sphere sphere = new Sphere(radius, stepSize, center);
         FloatBuffer spherePositions = sphere.sphereVerticesBuffer;
         spherePositions.position(0);
@@ -172,7 +170,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private void translateModelToView() {
         Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
+        //Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
     }
 
     private void handleScale() {

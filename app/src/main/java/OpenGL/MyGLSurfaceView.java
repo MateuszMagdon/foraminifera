@@ -1,9 +1,11 @@
-package com.example.mateu_000.foraminifera;
+package OpenGL;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+
+import OpenGL.MyGLRenderer;
 
 
 public class MyGLSurfaceView extends GLSurfaceView{

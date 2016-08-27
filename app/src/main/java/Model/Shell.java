@@ -1,53 +1,36 @@
 package Model;
 
-/**
- * Created by mateu_000 on 2015-02-08.
- */
+
 public class Shell {
-    private Point center;
-    private double radius;
-    private Point apperturePosition;
-    private double thickness;
+    public Point center;
+    public Point aperturePosition;
 
-    private int shellIterator;
+    public double radius;
+    public double thickness;
 
-    public double getThickness() {
-        return thickness;
+    public Vector axisVector;
+
+    public Shell(Point center, double radius, double thickness, Point aperturePosition){
+        setFields(center, radius, thickness);
+        this.aperturePosition = aperturePosition;
+        this.axisVector = aperturePosition.getVector(center);
     }
 
-    public void setThickness(double thickness) {
+    public Shell(Point center, double radius, double thickness, Shell previousShell){
+        setFields(center, radius, thickness);
+        this.aperturePosition = calculateAperturePosition(previousShell.aperturePosition);
+        this.axisVector = aperturePosition.getVector(previousShell.aperturePosition);
+    }
+
+    private void setFields(Point center, double radius, double thickness) {
+        this.center = center;
+        this.radius = radius;
         this.thickness = thickness;
     }
 
-    public Point getApperturePosition() {
-        return apperturePosition;
+    private Point calculateAperturePosition(Point aperturePosition) {
+        return ;
     }
 
-    public void setApperturePosition(Point apperturePosition) {
-        this.apperturePosition = apperturePosition;
-    }
 
-    public double getRadius() {
-        return radius;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = radius;
-    }
-
-    public Point getCenter() {
-        return center;
-    }
-
-    public void setCenter(Point center) {
-        this.center = center;
-    }
-
-    public int getShellIterator() {
-        return shellIterator;
-    }
-
-    public Shell(int shellIterator) {
-        this.shellIterator = shellIterator;
-    }
 }

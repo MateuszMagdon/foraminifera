@@ -1,4 +1,4 @@
-package com.example.mateu_000.foraminifera;
+package OpenGL;
 
 
 import java.nio.ByteBuffer;

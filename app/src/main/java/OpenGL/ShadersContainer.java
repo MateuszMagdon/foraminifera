@@ -1,4 +1,4 @@
-package com.example.mateu_000.foraminifera;
+package OpenGL;
 
 public class ShadersContainer {
     public static final String vertexShader =

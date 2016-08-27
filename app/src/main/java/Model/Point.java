@@ -1,8 +1,5 @@
 package Model;
 
-/**
- * Created by mateu_000 on 2015-02-09.
- */
 public class Point {
     public double x;
     public double y;
@@ -43,5 +40,17 @@ public class Point {
         result[2] = (float) z;
 
         return result;
+    }
+
+    public Point addVector(Vector vector){
+        double x = this.x + vector.x;
+        double y = this.y + vector.y;
+        double z = this.z + vector.z;
+
+        return new Point(x, y, z);
+    }
+
+    public Vector getVector(Point basePoint){
+        return new Vector(x - basePoint.x, y - basePoint.y, z - basePoint.z);
     }
 }
