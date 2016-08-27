@@ -5,6 +5,7 @@ public class ShadersContainer {
             "uniform mat4 u_MVPMatrix;          \n"		// A constant representing the combined model/view/projection matrix.
             + "uniform mat4 u_MVMatrix;         \n"		// A constant representing the combined model/view matrix.
             + "uniform vec3 u_LightPos;         \n"	    // The position of the light in eye space.
+            + "uniform vec4 u_Color;            \n"		// Passed in color
             + "attribute vec4 a_Position;       \n"		// Per-vertex position information we will pass in.
             + "varying vec4 v_Color;            \n"		// This will be passed into the fragment shader.
 
@@ -17,7 +18,7 @@ public class ShadersContainer {
             + "   float diffuse = max(dot(modelViewNormal, lightVector), 2.5f);         \n" // Calculate the dot product of the light vector and vertex normal.
                                                                                             // If the normal and light vector are pointing in the same direction then it will get max illumination.
             + "   diffuse = diffuse * (1.0 / (1.0 + (0.2 * distance * distance)));      \n" // Attenuate the light based on distance.
-            + "   v_Color = vec4(1.0, 0.498039, 0.0, 1.0) * diffuse;                    \n" // Multiply the color by the illumination level. It will be interpolated across the triangle.
+            + "   v_Color = u_Color * diffuse;                    \n" // Multiply the color by the illumination level. It will be interpolated across the triangle.
             + "   gl_Position = u_MVPMatrix * a_Position;                               \n" // gl_Position is a special variable used to store the final position.
                                                                                             // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
             + "}                                                                        \n";

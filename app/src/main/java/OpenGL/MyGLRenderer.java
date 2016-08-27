@@ -8,11 +8,9 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.os.SystemClock;
 import android.util.Log;
 
 import Model.Foraminifera;
-import Model.Point;
 import Model.Shell;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
@@ -24,6 +22,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int mMVMatrixHandle;
     private int mLightPosHandle;
     private int mPositionHandle;
+    private int mColorHandle;
 
     private final int mPositionDataSize = 3;
 
@@ -34,6 +33,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private float[] mAccumulatedRotation = new float[16];
 
+    private final float[] mInnerSphereColor = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+    private final float[] mOuterSphereColor = new float[] {1.0f, 0.498038f, 0.0f, 1.0f};
     private final float[] mLightInitialPosition = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
     private final float[] mLightCalculatedPosition = new float[4];
     private final float[] mLightPosInEyeSpace = new float[4];
@@ -126,12 +127,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVPMatrix");
         mMVMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVMatrix");
         mLightPosHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_LightPos");
+        mColorHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_Color");
+
         mPositionHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Position");
     }
 
     private void iluminateScene() {
-        long time = SystemClock.uptimeMillis() % 10000L;
-        float lightRotationAngle = (360.0f / 1000.0f) * ((int) time);
+//        long time = SystemClock.uptimeMillis() % 10000L;
+//        float lightRotationAngle = (360.0f / 1000.0f) * ((int) time);
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -152,23 +155,24 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         foram.addNextShell();
 
         for (Shell shell : foram.shells) {
-            drawSphere(shell.outerSphere);
+            drawSphere(shell.outerSphere, mOuterSphereColor);
         }
     }
 
-    private void drawSphere(Sphere sphere) {
+    private void drawSphere(Sphere sphere, float[] color) {
         translateModelToView();
 
-        handleScale();
-        handleRotation();
-        handleTranslation();
-
+        handleTouchScaling();
+        handleTouchRotation();
+        handleTouchTranslation();
 
         FloatBuffer spherePositions = sphere.sphereVerticesBuffer;
         spherePositions.position(0);
 
         GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false, 0, spherePositions);
         GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+        GLES20.glUniform4f(mColorHandle, color[0], color[1], color[2], color[3]);
 
         Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
         GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
@@ -186,11 +190,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -7.0f);
     }
 
-    private void handleScale() {
+    private void handleTouchScaling() {
         Matrix.scaleM(mModelMatrix, 0, mScaleFactor, mScaleFactor, mScaleFactor);
     }
 
-    private void handleRotation() {
+    private void handleTouchRotation() {
         float[] mCurrentRotation = new float[16];
 
         Matrix.setIdentityM(mCurrentRotation, 0);
@@ -203,7 +207,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mModelMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
     }
 
-    private void handleTranslation() {
+    private void handleTouchTranslation() {
         float[] mCurrentTranslation = new float[16];
 
         Matrix.setIdentityM(mCurrentTranslation, 0);
@@ -215,13 +219,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
 
-    /**
-     * Helper function to compile a shader.
-     *
-     * @param shaderType The shader type.
-     * @param shaderSource The shader source code.
-     * @return An OpenGL handle to the shader.
-     */
     private int compileShader(final int shaderType, final String shaderSource) {
         int shaderHandle = GLES20.glCreateShader(shaderType);
 
@@ -254,14 +251,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return shaderHandle;
     }
 
-    /**
-     * Helper function to compile and link a program.
-     *
-     * @param vertexShaderHandle An OpenGL handle to an already-compiled vertex shader.
-     * @param fragmentShaderHandle An OpenGL handle to an already-compiled fragment shader.
-     * @param attributes Attributes that need to be bound to the program.
-     * @return An OpenGL handle to the program.
-     */
     private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle,
                                      final String[] attributes) {
         int programHandle = GLES20.glCreateProgram();

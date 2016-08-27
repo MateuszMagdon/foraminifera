@@ -33,17 +33,21 @@ public class Sphere {
         
         delta = stepSize * degree;
 
-        int bufferCapacity = calculateBufferCapacity();
-        ByteBuffer sphereVertexByte = ByteBuffer.allocateDirect(bufferCapacity);
-        sphereVertexByte.order(ByteOrder.nativeOrder());
-        sphereVerticesBuffer = sphereVertexByte.asFloatBuffer();
+        prepareBuffer();
 
         calculateVertices();
     }
 
+    private void prepareBuffer() {
+        int bufferCapacity = calculateBufferCapacity();
+        ByteBuffer sphereVertexByte = ByteBuffer.allocateDirect(bufferCapacity);
+        sphereVertexByte.order(ByteOrder.nativeOrder());
+        sphereVerticesBuffer = sphereVertexByte.asFloatBuffer();
+    }
+
     private int calculateBufferCapacity(){
         int pointsPerPI = (int)(Math.ceil(Math.PI / delta));
-        return pointsPerVertex * floatSize * pointsPerPI * 2 * pointsPerPI * 6;
+        return pointsPerVertex * floatSize * pointsPerPI * 2 * pointsPerPI * 6; //6 is number of floats per one loop iteration (2 triangles)
     }
 
     private void calculateVertices() {
