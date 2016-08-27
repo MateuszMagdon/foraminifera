@@ -120,9 +120,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         iluminateScene();
 
         drawForaminifera();
-//        drawSphere(1.0f, new Point(0.0, 0.0, 0.0));
-//        drawSphere(1.2f, new Point(1.0, 1.0, 0.0));
-//        drawSphere(1.5f, new Point(1.0, 1.0, -1.0));
     }
 
     private void prepareShaderInputHandlers() {
@@ -149,8 +146,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private void drawForaminifera() {
         Foraminifera foram = new Foraminifera();
         foram.addNextShell();
-//        foram.addNextShell();
-//        foram.addNextShell();
+        foram.addNextShell();
+        foram.addNextShell();
+        foram.addNextShell();
+        foram.addNextShell();
 
         for (Shell shell : foram.shells) {
             drawSphere(shell.outerSphere);

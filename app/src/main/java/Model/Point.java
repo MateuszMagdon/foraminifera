@@ -53,4 +53,11 @@ public class Point {
     public Vector getVector(Point basePoint){
         return new Vector(x - basePoint.x, y - basePoint.y, z - basePoint.z);
     }
+
+    public double getDistance(Point point){
+        double v = x - point.x;
+        double u = y - point.y;
+        double w = z - point.z;
+        return Math.sqrt(v * v + u * u + w * w);
+    }
 }

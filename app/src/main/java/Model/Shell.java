@@ -35,8 +35,8 @@ public class Shell {
 
         createOpenGLSperes();
 
-        this.aperturePosition = calculateAperturePosition(previousShell.aperturePosition);
-        //this.axisVector = aperturePosition.getVector(previousShell.aperturePosition);
+        this.aperturePosition = calculateAperturePosition(previousShell);
+        this.axisVector = aperturePosition.getVector(previousShell.aperturePosition);
     }
 
     private void createOpenGLSperes() {
@@ -44,8 +44,22 @@ public class Shell {
         outerSphere = new Sphere(radius + thickness, center);
     }
 
-    private Point calculateAperturePosition(Point previousAperturePosition) {
-        return null;
+    private Point calculateAperturePosition(Shell previousShell) {
+        Point min = null;
+        double minDistance = 0;
+
+        for (Point point : outerSphere.points) {
+            double distance = point.getDistance(previousShell.center);
+            double previousOuterRadius = previousShell.radius + previousShell.thickness;
+            if (distance > previousOuterRadius){
+                if (min == null || distance < minDistance){
+                    min = point;
+                    minDistance = distance;
+                }
+            }
+        }
+
+        return min;
     }
 
 

@@ -7,9 +7,11 @@ import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import Helpers.PointFactory;
 import Model.Point;
 
 public class Sphere {
+    private final PointFactory pointFactory;
     public int pointsCount = 0;
     public FloatBuffer sphereVerticesBuffer;
     public List<Point> points = new LinkedList<>();
@@ -27,6 +29,8 @@ public class Sphere {
     public Sphere(double radius, Point center) {
         this.radius = radius;
         this.center = center;
+        pointFactory = new PointFactory(radius, center);
+        
         delta = stepSize * degree;
 
         int bufferCapacity = calculateBufferCapacity();
@@ -57,25 +61,30 @@ public class Sphere {
                 double sinTheta = (float) Math.sin(theta);
                 double sinThetaDelta = (float) Math.sin(theta + delta);
 
-                Point point1 = new Point(radius, sinPhi, cosPhi, sinTheta, cosTheta, center);
-                Point point2 = new Point(radius, sinPhi, cosPhi, sinThetaDelta, cosThetaDelta, center);
-                Point point3 = new Point(radius, sinPhiDelta, cosPhiDelta, sinTheta, cosTheta, center);
-                Point point4 = new Point(radius, sinPhiDelta, cosPhiDelta, sinThetaDelta, cosThetaDelta, center);
-
-                sphereVerticesBuffer.put(point1.AsFloatArray());
-                sphereVerticesBuffer.put(point2.AsFloatArray());
-                sphereVerticesBuffer.put(point3.AsFloatArray());
-
-                sphereVerticesBuffer.put(point3.AsFloatArray());
-                sphereVerticesBuffer.put(point2.AsFloatArray());
-                sphereVerticesBuffer.put(point4.AsFloatArray());
-
-                pointsCount+=6;
-
-                points.add(point1);
+                createTriangles(cosPhi, cosPhiDelta, sinPhi, sinPhiDelta, cosTheta, cosThetaDelta, sinTheta, sinThetaDelta);
             }
         }
         sphereVerticesBuffer.position(0);
+    }
+
+    private void createTriangles(double cosPhi, double cosPhiDelta, double sinPhi, double sinPhiDelta, double cosTheta, double cosThetaDelta, double sinTheta, double sinThetaDelta) {
+        Point point1 = pointFactory.CreatePoint(sinPhi, cosPhi, sinTheta, cosTheta);
+        Point point2 = pointFactory.CreatePoint(sinPhi, cosPhi, sinThetaDelta, cosThetaDelta);
+        Point point3 = pointFactory.CreatePoint(sinPhiDelta, cosPhiDelta, sinTheta, cosTheta);
+        Point point4 = pointFactory.CreatePoint(sinPhiDelta, cosPhiDelta, sinThetaDelta, cosThetaDelta);
+
+        insertTriangleToBuffer(point1, point2, point3);
+        insertTriangleToBuffer(point3, point2, point4);
+
+        points.add(point1);
+    }
+
+    private void insertTriangleToBuffer(Point point1, Point point2, Point point3) {
+        sphereVerticesBuffer.put(point1.AsFloatArray());
+        sphereVerticesBuffer.put(point2.AsFloatArray());
+        sphereVerticesBuffer.put(point3.AsFloatArray());
+
+        pointsCount+=3;
     }
 
 }
