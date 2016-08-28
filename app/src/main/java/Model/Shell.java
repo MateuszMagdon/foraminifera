@@ -2,6 +2,7 @@ package Model;
 
 
 import OpenGL.Sphere;
+import OpenGL.SphereFactory;
 
 public class Shell {
     public Point center;
@@ -16,27 +17,32 @@ public class Shell {
 
     public Sphere innerSphere;
     public Sphere outerSphere;
+    private SphereFactory sphereFactory;
 
-    public Shell()
+    public Shell(SphereFactory sphereFactory)
     {
+        this.sphereFactory = sphereFactory;
+
         center = new Point(0, 0, 0);
         radius = 1.0d;
-        thickness = 0.02d;
+        thickness = 0.1d;
         scaleRate = new Vector(1.0d, 1.0d, 1.0d);
 
         createOpenGLSpheres();
 
-        aperturePosition = new Point(0, 1, 0);
+        aperturePosition = new Point(0, 1.0d, 0);
         this.axisVector = aperturePosition.GetVector(center);
     }
 
-    public Shell(Point center, double radius, double thickness, Shell previousShell, Vector scaleRate)
+    public Shell(Point center, double radius, double thickness, Shell previousShell, Vector scaleRate, SphereFactory sphereFactory)
     {
+        this.sphereFactory = sphereFactory;
+
         this.center = center;
         this.radius = radius;
         this.thickness = thickness;
 
-        this.scaleRate = scaleRate;
+        this.scaleRate = scaleRate.Clone();
 
         createOpenGLSpheres();
 
@@ -45,8 +51,8 @@ public class Shell {
     }
 
     private void createOpenGLSpheres() {
-        innerSphere = new Sphere(radius, center, scaleRate);
-        outerSphere = new Sphere(radius + thickness, center, scaleRate);
+        innerSphere = sphereFactory.CreateSphere(radius, center, scaleRate);
+        outerSphere = sphereFactory.CreateSphere(radius + thickness, center, scaleRate);
     }
 
     private Point calculateAperturePosition(Shell previousShell) {

@@ -11,33 +11,33 @@ public class Point {
         this.z = z;
     }
 
-    public Point(double radius, double phi, double theta, Point offset) {
-        double sinPhi = Math.sin(phi);
-        double cosPhi = Math.cos(phi);
-        double cosTheta = Math.cos(theta);
-        double sinTheta = Math.sin(theta);
-
-        calculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
+    public Point(double sinPhi, double cosPhi, double sinTheta, double cosTheta){
+        x = sinPhi * cosTheta;
+        y = cosPhi;
+        z = sinPhi * sinTheta;
     }
 
-    public Point(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta, Point offset){
-        calculatePosition(radius, sinPhi, cosPhi, sinTheta, cosTheta, offset);
-    }
-
-    private void calculatePosition(double radius, double sinPhi, double cosPhi, double sinTheta, double cosTheta, Point offset) {
-        x = radius * sinPhi * cosTheta;
-        x += offset.x;
-        y = radius * sinPhi * sinTheta;
-        y += offset.y;
-        z = radius * cosPhi;
-        z += offset.z;
-    }
-
-    public Point ScalePointPosition(Vector scalingVector){
+    public Point Scale(Vector scalingVector){
         x *= scalingVector.x;
         y *= scalingVector.y;
         z *= scalingVector.z;
         return this;
+    }
+
+    public Point Rotate(){
+
+        return this;
+    }
+
+    public Point Translate(Vector translationVector){
+        x += translationVector.x;
+        y += translationVector.y;
+        z += translationVector.z;
+        return this;
+    }
+
+    public Point Clone(){
+        return new Point(x, y, z);
     }
 
     public float[] AsFloatArray(){
@@ -49,12 +49,8 @@ public class Point {
         return result;
     }
 
-    public Point AddVector(Vector vector){
-        double x = this.x + vector.x;
-        double y = this.y + vector.y;
-        double z = this.z + vector.z;
-
-        return new Point(x, y, z);
+    public Vector GetVector(){
+        return GetVector(new Point(0, 0, 0));
     }
 
     public Vector GetVector(Point basePoint){
@@ -66,5 +62,14 @@ public class Point {
         double u = y - point.y;
         double w = z - point.z;
         return Math.sqrt(v * v + u * u + w * w);
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }

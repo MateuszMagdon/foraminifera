@@ -11,7 +11,7 @@ public class Vector {
         this.z = z;
     }
 
-    public Vector multiply(double growthFactor) {
+    public Vector Multiply(double growthFactor) {
         x *= growthFactor;
         y *= growthFactor;
         z *= growthFactor;
@@ -19,7 +19,7 @@ public class Vector {
         return this;
     }
 
-    public Vector deflect(double deviationAngle) {
+    public Vector Deflect(double deviationAngle) {
 
         double cos = Math.cos(deviationAngle);
         double sin = Math.sin(deviationAngle);
@@ -33,12 +33,13 @@ public class Vector {
         return this;
     }
 
-    public Vector rotate(double rotationAngle, Vector rotationVector) {
+    public Vector Rotate(double rotationAngle, Vector rotationAxisVector) {
+        //Rotate this vector
 
-        Vector vector = rotationVector.clone().normalize();
-        double u = vector.x;
-        double v = vector.y;
-        double w = vector.z;
+        Vector rotationAxisVersor = rotationAxisVector.Clone().Normalize();
+        double u = rotationAxisVersor.x;
+        double v = rotationAxisVersor.y;
+        double w = rotationAxisVersor.z;
 
         double cos = Math.cos(rotationAngle);
         double sin = Math.sin(rotationAngle);
@@ -60,8 +61,8 @@ public class Vector {
         return this;
     }
 
-    public Vector normalize() {
-        double length = Math.sqrt(x * x + y * y + z * z);
+    public Vector Normalize() {
+        double length = GetLength();
         x /= length;
         y /= length;
         z /= length;
@@ -69,7 +70,20 @@ public class Vector {
         return this;
     }
 
-    public Vector clone() {
+    public Vector Clone() {
         return new Vector(x, y, z);
+    }
+
+    public double GetLength(){
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    @Override
+    public String toString() {
+        return "Vector{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }

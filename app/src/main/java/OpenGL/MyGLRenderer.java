@@ -33,7 +33,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private float[] mAccumulatedRotation = new float[16];
 
-    private final float[] mInnerSphereColor = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+    private final float[] mInnerSphereColor = new float[] {0.3f, 0.3f, 0.3f, 1.0f};
     private final float[] mOuterSphereColor = new float[] {1.0f, 0.498038f, 0.0f, 0.1f};
 
     private final float[] mBackgroundColor = new float[] {0.3f, 0.6f, 0.3f, 1.0f};
@@ -47,18 +47,30 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public volatile float mDeltaTranslationX;
     public volatile float mDeltaTranslationY;
     public volatile float mScaleFactor = 1.0f;
+    private Foraminifera foraminifera;
 
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         GLES20.glClearColor(mBackgroundColor[0], mBackgroundColor[1], mBackgroundColor[2], mBackgroundColor[3]);
 
-        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        //GLES20.glEnable(GLES20.GL_CULL_FACE); //draw only facing us
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         setProjectionMatrix();
 
         compileShaders();
+
+        buildForaminifera();
+    }
+
+    private void buildForaminifera() {
+        foraminifera = new Foraminifera();
+        foraminifera.addNextShell();
+        foraminifera.addNextShell();
+//        foram.addNextShell();
+//        foram.addNextShell();
+//        foram.addNextShell();
     }
 
     private void compileShaders() {
@@ -150,24 +162,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void drawForaminifera() {
-        Foraminifera foram = new Foraminifera();
-        foram.addNextShell();
-        foram.addNextShell();
-        foram.addNextShell();
-        foram.addNextShell();
-        foram.addNextShell();
-
-        for (Shell shell : foram.shells) {
+        for (Shell shell : foraminifera.shells) {
             drawSphere(shell.outerSphere, mOuterSphereColor);
+            drawSphere(shell.innerSphere, mInnerSphereColor);
         }
     }
 
     private void drawSphere(Sphere sphere, float[] color) {
         translateModelToView();
-
-        handleTouchScaling();
-        handleTouchRotation();
-        handleTouchTranslation();
 
         FloatBuffer spherePositions = sphere.sphereVerticesBuffer;
         spherePositions.position(0);
@@ -176,6 +178,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
         GLES20.glUniform4f(mColorHandle, color[0], color[1], color[2], color[3]);
+
+        handleTouchScaling();
+        handleTouchRotation();
+        handleTouchTranslation();
 
         Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
         GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);

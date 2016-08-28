@@ -3,20 +3,23 @@ package Model;
 import java.util.LinkedList;
 
 import Helpers.SettingsContainer;
+import OpenGL.SphereFactory;
 
 public class Foraminifera {
+    private final SphereFactory sphereFactory;
     private final Vector scaleVector;
     public LinkedList<Shell> shells = new LinkedList<>();
 
     public Foraminifera()
     {
-        scaleVector = new Vector(2, SettingsContainer.scaleY, SettingsContainer.scaleZ);
+        sphereFactory = new SphereFactory();
+        scaleVector = new Vector(SettingsContainer.scaleX, SettingsContainer.scaleY, SettingsContainer.scaleZ);
 
         shells.add(createInitialShell());
     }
 
     private Shell createInitialShell(){
-        return new Shell();
+        return new Shell(sphereFactory);
     }
 
     public void addNextShell() {
@@ -26,7 +29,7 @@ public class Foraminifera {
         double nextRadius = calculateRadius(previousShell);
         double nextThickness = calculateThickness(previousShell);
 
-        Shell nextShell = new Shell(nextCenter, nextRadius, nextThickness, previousShell, scaleVector);
+        Shell nextShell = new Shell(nextCenter, nextRadius, nextThickness, previousShell, scaleVector, sphereFactory);
         shells.add(nextShell);
     }
 
@@ -40,16 +43,16 @@ public class Foraminifera {
 
     private Point calculateCenterPosition(Shell previousShell) {
         Vector growthVector = calculateGrowthVector(previousShell);
-        return previousShell.aperturePosition.AddVector(growthVector);
+        return previousShell.aperturePosition.Clone().Translate(growthVector);
     }
 
     private Vector calculateGrowthVector(Shell previousShell) {
         Vector baseVector = previousShell.axisVector;
-        return baseVector.clone()
-                .multiply(SettingsContainer.growthFactor)
-                .multiply(SettingsContainer.translationFactor)
-                .deflect(SettingsContainer.deviationAngle)
-                .rotate(SettingsContainer.rotationAngle, baseVector);
+        return baseVector.Clone()
+                .Deflect(SettingsContainer.deviationAngle)
+                .Rotate(SettingsContainer.rotationAngle, baseVector)
+                .Multiply(SettingsContainer.growthFactor)
+                .Multiply(SettingsContainer.translationFactor);
     }
 
     public void removeShell(){
