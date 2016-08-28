@@ -1,9 +1,9 @@
-package Model;
+package Helpers;
 
 public class Vector {
-    public double x;
-    public double y;
-    public double z;
+    private double x;
+    private double y;
+    private double z;
 
     public Vector(double x, double y, double z) {
         this.x = x;
@@ -34,8 +34,6 @@ public class Vector {
     }
 
     public Vector Rotate(double rotationAngle, Vector rotationAxisVector) {
-        //Rotate this vector
-
         Vector rotationAxisVersor = rotationAxisVector.Clone().Normalize();
         double u = rotationAxisVersor.x;
         double v = rotationAxisVersor.y;
@@ -70,6 +68,11 @@ public class Vector {
         return this;
     }
 
+    public Vector DifferenceVector(Vector newVector){
+
+        return new Vector(newVector.x - x, newVector.y - y, newVector.z - z);
+    }
+
     public Vector Clone() {
         return new Vector(x, y, z);
     }
@@ -85,5 +88,17 @@ public class Vector {
                 ", y=" + y +
                 ", z=" + z +
                 '}';
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
     }
 }

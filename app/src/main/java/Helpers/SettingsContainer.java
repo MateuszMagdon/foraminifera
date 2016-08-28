@@ -12,7 +12,7 @@ public class SettingsContainer {
     public static double rotationAngle = Math.PI / 10;
 
     //additional scaling;
-    public static double scaleX = 1.5;
+    public static double scaleX = 1.0;
     public static double scaleY = 1.0;
     public static double scaleZ = 1.0;
 }

@@ -1,9 +1,9 @@
-package Model;
+package Helpers;
 
 public class Point {
-    public double x;
-    public double y;
-    public double z;
+    private double x;
+    private double y;
+    private double z;
 
     public Point(double x, double y, double z) {
         this.x = x;
@@ -18,9 +18,16 @@ public class Point {
     }
 
     public Point Scale(Vector scalingVector){
-        x *= scalingVector.x;
-        y *= scalingVector.y;
-        z *= scalingVector.z;
+        x *= scalingVector.getX();
+        y *= scalingVector.getY();
+        z *= scalingVector.getZ();
+        return this;
+    }
+
+    public Point Scale(Vector scalingVector, ReferenceSpace referenceSpace){
+        x *= scalingVector.getX();
+        y *= scalingVector.getY();
+        z *= scalingVector.getZ();
         return this;
     }
 
@@ -30,9 +37,9 @@ public class Point {
     }
 
     public Point Translate(Vector translationVector){
-        x += translationVector.x;
-        y += translationVector.y;
-        z += translationVector.z;
+        x += translationVector.getX();
+        y += translationVector.getY();
+        z += translationVector.getZ();
         return this;
     }
 
@@ -71,5 +78,17 @@ public class Point {
                 ", y=" + y +
                 ", z=" + z +
                 '}';
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
     }
 }

@@ -1,58 +1,81 @@
 package Model;
 
 
+import Helpers.Point;
+import Helpers.ReferenceSpace;
+import Helpers.Vector;
 import OpenGL.Sphere;
 import OpenGL.SphereFactory;
 
 public class Shell {
-    public Point center;
-    public Point aperturePosition;
+    private Point center;
+    private Point aperturePosition;
 
-    public double radius;
-    public double thickness;
+    private double radius;
+    private double thickness;
 
-    public Vector scaleRate;
+    private Vector scaleRate;
 
-    public Vector axisVector;
+    private ReferenceSpace referenceSpace;
 
-    public Sphere innerSphere;
-    public Sphere outerSphere;
+    private Vector nextShellGrowthAxis;
+    private ReferenceSpace nextShellReferenceSpace;
+
+    private Sphere innerSphere;
+    private Sphere outerSphere;
+
+    private Shell previousShell;
+
     private SphereFactory sphereFactory;
 
-    public Shell(SphereFactory sphereFactory)
+    public Shell(SphereFactory sphereFactory) //for initial shell only
     {
+        previousShell = null;
         this.sphereFactory = sphereFactory;
 
         center = new Point(0, 0, 0);
         radius = 1.0d;
         thickness = 0.1d;
+
         scaleRate = new Vector(1.0d, 1.0d, 1.0d);
+        referenceSpace = new ReferenceSpace(
+                new Vector(1.0d, 0.0d, 0.0d),
+                new Vector(0.0d, 1.0d, 0.0d),
+                new Vector(0.0d, 0.0d, 1.0d));
 
         createOpenGLSpheres();
 
         aperturePosition = new Point(0, 1.0d, 0);
-        this.axisVector = aperturePosition.GetVector(center);
+        nextShellGrowthAxis = aperturePosition.GetVector(center);
+
+        nextShellReferenceSpace = calculateNextReferenceSpace();
     }
 
-    public Shell(Point center, double radius, double thickness, Shell previousShell, Vector scaleRate, SphereFactory sphereFactory)
+    public Shell(Point center, double radius, double thickness, Shell previousShell, Vector scaleRate,
+                 SphereFactory sphereFactory)
     {
+        this.previousShell = previousShell;
         this.sphereFactory = sphereFactory;
 
-        this.center = center;
+        this.center = center.Clone();
         this.radius = radius;
         this.thickness = thickness;
 
         this.scaleRate = scaleRate.Clone();
 
+        referenceSpace = previousShell.nextShellReferenceSpace;
+
         createOpenGLSpheres();
 
-        this.aperturePosition = calculateAperturePosition(previousShell);
-        this.axisVector = aperturePosition.GetVector(previousShell.aperturePosition);
+        aperturePosition = calculateAperturePosition(previousShell);
+        nextShellGrowthAxis = aperturePosition.GetVector(previousShell.aperturePosition).Normalize();
+
+        nextShellReferenceSpace = calculateNextReferenceSpace();
     }
 
     private void createOpenGLSpheres() {
-        innerSphere = sphereFactory.CreateSphere(radius, center, scaleRate);
-        outerSphere = sphereFactory.CreateSphere(radius + thickness, center, scaleRate);
+        innerSphere = sphereFactory.CreateSphere(radius, center, scaleRate, referenceSpace);
+        outerSphere = sphereFactory.CreateSphere(radius + thickness, center, scaleRate, referenceSpace);
     }
 
     private Point calculateAperturePosition(Shell previousShell) {
@@ -72,7 +95,37 @@ public class Shell {
         return min;
     }
 
+    private ReferenceSpace calculateNextReferenceSpace() {
+        Vector diffOnYAxis = referenceSpace.getY().DifferenceVector(nextShellGrowthAxis);
 
 
+        //TODO what should be x and z?
 
+        return new ReferenceSpace(new Vector(0,0,0), nextShellGrowthAxis, new Vector(0,0,0));
+    }
+
+
+    public double getThickness() {
+        return thickness;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public Point getAperturePosition() {
+        return aperturePosition.Clone();
+    }
+
+    public Vector getNextShellGrowthAxis() {
+        return nextShellGrowthAxis.Clone();
+    }
+
+    public Sphere getInnerSphere() {
+        return innerSphere;
+    }
+
+    public Sphere getOuterSphere() {
+        return outerSphere;
+    }
 }

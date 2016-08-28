@@ -4,8 +4,9 @@ package OpenGL;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import Model.Point;
-import Model.Vector;
+import Helpers.Point;
+import Helpers.ReferenceSpace;
+import Helpers.Vector;
 
 public class Sphere {
     public int pointsCount;
@@ -15,11 +16,13 @@ public class Sphere {
     private final Point center;
     private double radius;
     private Vector scaleRate;
+    private ReferenceSpace referenceSpace;
 
-    public Sphere(double radius, Point center, Vector scaleRate, int pointsCount) {
+    public Sphere(double radius, Point center, Vector scaleRate, ReferenceSpace referenceSpace, int pointsCount) {
         this.radius = radius;
         this.center = center;
         this.scaleRate = scaleRate;
+        this.referenceSpace = referenceSpace;
         this.pointsCount = pointsCount;
     }
 

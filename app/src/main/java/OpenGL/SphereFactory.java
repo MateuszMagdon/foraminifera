@@ -7,8 +7,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 
-import Model.Point;
-import Model.Vector;
+import Helpers.Point;
+import Helpers.ReferenceSpace;
+import Helpers.Vector;
 
 public class SphereFactory {
     private int baseSpherePointsCount;
@@ -37,12 +38,14 @@ public class SphereFactory {
         calculateVertices();
     }
 
-    public Sphere CreateSphere(double radius, Point center, Vector scalingVector){
-        Vector scalingVectorCloned = scalingVector.Clone();
+    public Sphere CreateSphere(double radius, Point center, Vector scaleRate, ReferenceSpace referenceSpace){
+        Vector scalingVectorCloned = scaleRate.Clone();
         Point centerCloned = center.Clone();
-        Sphere sphere = new Sphere(radius, centerCloned, scalingVectorCloned, baseSpherePointsCount);
 
-        LinkedList<Point> copiedPoints = transformatePoints(centerCloned, scalingVectorCloned.Multiply(radius));
+        Sphere sphere = new Sphere(radius, centerCloned, scalingVectorCloned, referenceSpace, baseSpherePointsCount);
+
+        Vector scalingWithRadiusIncluded = scalingVectorCloned.Clone().Multiply(radius);
+        LinkedList<Point> copiedPoints = transformatePoints(centerCloned, scalingWithRadiusIncluded, referenceSpace);
 
         FloatBuffer newBuffer = prepareBuffer(bufferCapacity);
         translatePointsToBuffer(copiedPoints, newBuffer);
@@ -54,13 +57,13 @@ public class SphereFactory {
     }
 
     @NonNull
-    private LinkedList<Point> transformatePoints(Point center, Vector scalingVector) {
+    private LinkedList<Point> transformatePoints(Point center, Vector scalingVector, ReferenceSpace referenceSpace) {
         LinkedList<Point> transformatedPointsList = new LinkedList<>();
 
         Vector translationVector = center.GetVector();
         for (Point point : baseSpherePointsList) {
             Point clonedPoint = point.Clone();
-            clonedPoint.Scale(scalingVector);
+            clonedPoint.Scale(scalingVector, referenceSpace);
             clonedPoint.Rotate();
             clonedPoint.Translate(translationVector);
             transformatedPointsList.add(clonedPoint);

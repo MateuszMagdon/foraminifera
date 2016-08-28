@@ -2,13 +2,15 @@ package Model;
 
 import java.util.LinkedList;
 
+import Helpers.Point;
 import Helpers.SettingsContainer;
+import Helpers.Vector;
 import OpenGL.SphereFactory;
 
 public class Foraminifera {
     private final SphereFactory sphereFactory;
     private final Vector scaleVector;
-    public LinkedList<Shell> shells = new LinkedList<>();
+    private LinkedList<Shell> shells = new LinkedList<>();
 
     public Foraminifera()
     {
@@ -34,21 +36,21 @@ public class Foraminifera {
     }
 
     private double calculateThickness(Shell previousShell) {
-        return previousShell.thickness * SettingsContainer.thicknessGrowthFactor;
+        return previousShell.getThickness() * SettingsContainer.thicknessGrowthFactor;
     }
 
     private double calculateRadius(Shell previousShell) {
-        return previousShell.radius * SettingsContainer.growthFactor;
+        return previousShell.getRadius() * SettingsContainer.growthFactor;
     }
 
     private Point calculateCenterPosition(Shell previousShell) {
         Vector growthVector = calculateGrowthVector(previousShell);
-        return previousShell.aperturePosition.Clone().Translate(growthVector);
+        return previousShell.getAperturePosition().Translate(growthVector);
     }
 
     private Vector calculateGrowthVector(Shell previousShell) {
-        Vector baseVector = previousShell.axisVector;
-        return baseVector.Clone()
+        Vector baseVector = previousShell.getNextShellGrowthAxis();
+        return baseVector.Multiply(previousShell.getRadius())
                 .Deflect(SettingsContainer.deviationAngle)
                 .Rotate(SettingsContainer.rotationAngle, baseVector)
                 .Multiply(SettingsContainer.growthFactor)
@@ -59,4 +61,7 @@ public class Foraminifera {
         shells.removeLast();
     }
 
+    public LinkedList<Shell> getShells() {
+        return (LinkedList<Shell>) shells.clone();
+    }
 }

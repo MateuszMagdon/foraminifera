@@ -47,14 +47,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public volatile float mDeltaTranslationX;
     public volatile float mDeltaTranslationY;
     public volatile float mScaleFactor = 1.0f;
-    private Foraminifera foraminifera;
 
+    private Foraminifera foraminifera;
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         GLES20.glClearColor(mBackgroundColor[0], mBackgroundColor[1], mBackgroundColor[2], mBackgroundColor[3]);
 
-        //GLES20.glEnable(GLES20.GL_CULL_FACE); //draw only facing us
+        //GLES20.glEnable(GLES20.GL_CULL_FACE); //draw only trangles which are facing us
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         setProjectionMatrix();
@@ -68,9 +68,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         foraminifera = new Foraminifera();
         foraminifera.addNextShell();
         foraminifera.addNextShell();
-//        foram.addNextShell();
-//        foram.addNextShell();
-//        foram.addNextShell();
+        foraminifera.addNextShell();
     }
 
     private void compileShaders() {
@@ -119,7 +117,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         final float bottom = -1.0f;
         final float top = 1.0f;
         final float near = 1.0f;
-        final float far = 10.0f;
+        final float far = 15.0f;
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
 
@@ -148,23 +146,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void iluminateScene() {
-//        long time = SystemClock.uptimeMillis() % 10000L;
-//        float lightRotationAngle = (360.0f / 1000.0f) * ((int) time);
-
-        // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mModelMatrix, 0);
-        //Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
-        //Matrix.rotateM(mModelMatrix, 0, -lightRotationAngle, 0.0f, 1.0f, 0.0f);
-        //Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, 2.0f);
 
         Matrix.multiplyMV(mLightCalculatedPosition, 0, mModelMatrix, 0, mLightInitialPosition, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightCalculatedPosition, 0);
     }
 
     private void drawForaminifera() {
-        for (Shell shell : foraminifera.shells) {
-            drawSphere(shell.outerSphere, mOuterSphereColor);
-            drawSphere(shell.innerSphere, mInnerSphereColor);
+        for (Shell shell : foraminifera.getShells()) {
+            drawSphere(shell.getOuterSphere(), mOuterSphereColor);
+            drawSphere(shell.getInnerSphere(), mInnerSphereColor);
         }
     }
 
