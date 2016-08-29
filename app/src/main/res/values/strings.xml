@@ -2,5 +2,14 @@
 <resources>
 
     <string name="app_name">Foraminifera</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="number_of_chambers">Number of chambers</string>
+    <string name="generate_button">Generate</string>
+    <string name="translation_factor">Translation factor</string>
+    <string name="growth_factor">Growth factor</string>
+    <string name="thickness_growth_factor">Thickness growth factor</string>
+    <string name="deviation_angle">Deviation angle</string>
+    <string name="rotation_angle">Rotation angle</string>
 
 </resources>

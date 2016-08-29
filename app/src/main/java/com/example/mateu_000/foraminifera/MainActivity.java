@@ -4,12 +4,17 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import Helpers.SettingsContainer;
+import Model.Foraminifera;
 import OpenGL.MyGLRenderer;
 import OpenGL.MyGLSurfaceView;
 
-public class MainActivity extends Activity
+public class MainActivity extends ActionBarActivity
 {
     private MyGLSurfaceView mGLSurfaceView;
     private MyGLRenderer mRenderer;
@@ -18,6 +23,9 @@ public class MainActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.activity_main);
 
         mGLSurfaceView = new MyGLSurfaceView(this);
 
@@ -33,7 +41,9 @@ public class MainActivity extends Activity
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-            mRenderer = new MyGLRenderer();
+            Foraminifera foraminifera = buildForaminifera();
+
+            mRenderer = new MyGLRenderer(foraminifera);
             mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
         }
         else
@@ -41,7 +51,16 @@ public class MainActivity extends Activity
             return;
         }
 
-        setContentView(mGLSurfaceView);
+        layout.addView(mGLSurfaceView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private Foraminifera buildForaminifera() {
+        Foraminifera foraminifera = new Foraminifera();
+
+        for (int index = 1; index < SettingsContainer.numberOfChambers; index++) {
+            foraminifera.addNextShell();
+        }
+        return foraminifera;
     }
 
     @Override

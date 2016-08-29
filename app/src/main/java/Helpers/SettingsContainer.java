@@ -1,6 +1,8 @@
 package Helpers;
 
 public class SettingsContainer {
+    public static double numberOfChambers = 3;
+
     public static double translationFactor = 0.8; //przesunięcie po growth axis srodka kolejnej sfery wzgledem srodka poprzedniej
         //0 to centrum kolejnej sfery w apperture kolejnej
         //1 to stykające się sfery - v = newRadius

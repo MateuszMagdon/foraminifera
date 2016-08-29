@@ -10,6 +10,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import Helpers.SettingsContainer;
 import Model.Foraminifera;
 import Model.Shell;
 
@@ -50,6 +51,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Foraminifera foraminifera;
 
+    public MyGLRenderer(Foraminifera foraminifera) {
+        this.foraminifera = foraminifera;
+    }
+
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         GLES20.glClearColor(mBackgroundColor[0], mBackgroundColor[1], mBackgroundColor[2], mBackgroundColor[3]);
@@ -60,15 +65,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         setProjectionMatrix();
 
         compileShaders();
-
-        buildForaminifera();
-    }
-
-    private void buildForaminifera() {
-        foraminifera = new Foraminifera();
-        foraminifera.addNextShell();
-        foraminifera.addNextShell();
-        foraminifera.addNextShell();
     }
 
     private void compileShaders() {
