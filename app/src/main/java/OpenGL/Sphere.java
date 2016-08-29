@@ -2,7 +2,7 @@ package OpenGL;
 
 
 import java.nio.FloatBuffer;
-import java.util.List;
+import java.util.LinkedList;
 
 import Helpers.Point;
 import Helpers.ReferenceSpace;
@@ -11,7 +11,7 @@ import Helpers.Vector;
 public class Sphere {
     public int pointsCount;
     public FloatBuffer sphereVerticesBuffer;
-    public List<Point> points;
+    public LinkedList<Point> points;
 
     private final Point center;
     private double radius;

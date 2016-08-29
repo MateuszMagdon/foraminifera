@@ -30,30 +30,39 @@ public class Shell {
 
     public Shell(SphereFactory sphereFactory) //for initial shell only
     {
-        previousShell = null;
-        this.sphereFactory = sphereFactory;
+        Point center = new Point(0, 0, 0);
+        double radius = 1.0d;
+        double thickness = 0.1d;
 
-        center = new Point(0, 0, 0);
-        radius = 1.0d;
-        thickness = 0.1d;
+        Shell previousShell = null;
 
-        scaleRate = new Vector(1.0d, 1.0d, 1.0d);
+        Vector scaleRate = new Vector(1.0d, 1.0d, 1.0d);
         referenceSpace = new ReferenceSpace(
                 new Vector(1.0d, 0.0d, 0.0d),
                 new Vector(0.0d, 1.0d, 0.0d),
                 new Vector(0.0d, 0.0d, 1.0d));
 
-        createOpenGLSpheres();
+        initializeShell(center, radius, thickness, previousShell, scaleRate, sphereFactory);
 
         aperturePosition = new Point(0, 1.0d, 0);
         nextShellGrowthAxis = aperturePosition.GetVector(center);
-
         nextShellReferenceSpace = calculateNextReferenceSpace();
     }
 
     public Shell(Point center, double radius, double thickness, Shell previousShell, Vector scaleRate,
                  SphereFactory sphereFactory)
     {
+        referenceSpace = previousShell.nextShellReferenceSpace;
+
+        initializeShell(center, radius, thickness, previousShell, scaleRate, sphereFactory);
+
+        aperturePosition = calculateAperturePosition(previousShell);
+        nextShellGrowthAxis = aperturePosition.GetVector(previousShell.aperturePosition).Normalize();
+        nextShellReferenceSpace = calculateNextReferenceSpace();
+    }
+
+    private void initializeShell(Point center, double radius, double thickness, Shell previousShell, Vector scaleRate,
+                                 SphereFactory sphereFactory){
         this.previousShell = previousShell;
         this.sphereFactory = sphereFactory;
 
@@ -63,19 +72,15 @@ public class Shell {
 
         this.scaleRate = scaleRate.Clone();
 
-        referenceSpace = previousShell.nextShellReferenceSpace;
-
         createOpenGLSpheres();
-
-        aperturePosition = calculateAperturePosition(previousShell);
-        nextShellGrowthAxis = aperturePosition.GetVector(previousShell.aperturePosition).Normalize();
-
-        nextShellReferenceSpace = calculateNextReferenceSpace();
     }
 
     private void createOpenGLSpheres() {
-        innerSphere = sphereFactory.CreateSphere(radius, center, scaleRate, referenceSpace);
         outerSphere = sphereFactory.CreateSphere(radius + thickness, center, scaleRate, referenceSpace);
+        sphereFactory.CalculateTrianglesForSphere(outerSphere);
+
+        innerSphere = sphereFactory.CreateSphere(radius, center, scaleRate, referenceSpace);
+        sphereFactory.CalculateTrianglesForSphere(innerSphere);
     }
 
     private Point calculateAperturePosition(Shell previousShell) {

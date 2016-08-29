@@ -47,13 +47,16 @@ public class SphereFactory {
         Vector scalingWithRadiusIncluded = scalingVectorCloned.Clone().Multiply(radius);
         LinkedList<Point> copiedPoints = transformatePoints(centerCloned, scalingWithRadiusIncluded, referenceSpace);
 
-        FloatBuffer newBuffer = prepareBuffer(bufferCapacity);
-        translatePointsToBuffer(copiedPoints, newBuffer);
-
         sphere.points = copiedPoints;
-        sphere.sphereVerticesBuffer = newBuffer;
 
         return sphere;
+    }
+
+    public void CalculateTrianglesForSphere(Sphere sphere){
+        FloatBuffer newBuffer = prepareBuffer(bufferCapacity);
+        translatePointsToBuffer(sphere.points, newBuffer);
+
+        sphere.sphereVerticesBuffer = newBuffer;
     }
 
     @NonNull
@@ -63,8 +66,8 @@ public class SphereFactory {
         Vector translationVector = center.GetVector();
         for (Point point : baseSpherePointsList) {
             Point clonedPoint = point.Clone();
+            clonedPoint.Rotate();//TODO rotate to have properly placed apperture
             clonedPoint.Scale(scalingVector, referenceSpace);
-            clonedPoint.Rotate();
             clonedPoint.Translate(translationVector);
             transformatedPointsList.add(clonedPoint);
         }
