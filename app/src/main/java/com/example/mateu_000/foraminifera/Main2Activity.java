@@ -10,6 +10,8 @@ import Helpers.SettingsContainer;
 
 public class Main2Activity extends ActionBarActivity {
 
+    private static final double DEG = Math.PI / 180;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +32,8 @@ public class Main2Activity extends ActionBarActivity {
         SettingsContainer.growthFactor = getValue(growthFactorEditText, 1.4d);
         SettingsContainer.thicknessGrowthFactor = getValue(thicknessGrowthFactorEditText, 1.1d);
 
-        SettingsContainer.deviationAngle = getValue(deviationAngleEditText, Math.PI/10);
-        SettingsContainer.rotationAngle = getValue(rotationAngleEditText, Math.PI/20);
+        SettingsContainer.deviationAngle = getValue(deviationAngleEditText, 30) * DEG;
+        SettingsContainer.rotationAngle = getValue(rotationAngleEditText, 50) * DEG;
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -44,6 +46,7 @@ public class Main2Activity extends ActionBarActivity {
         } catch (NumberFormatException e){}
         return result;
     }
+
 
     private int getValueInt(EditText editText, int defaultValue) {
         int result = defaultValue;
