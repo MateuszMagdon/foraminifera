@@ -88,7 +88,7 @@ public class Shell {
         double minDistance = 0;
 
         for (Point point : outerSphere.points) {
-            double distance = point.GetDistance(previousShell.center);
+            double distance = point.GetDistance(previousShell.aperturePosition);
             double previousOuterRadius = previousShell.radius + previousShell.thickness;
             if (distance > previousOuterRadius){
                 if (min == null || distance < minDistance){
