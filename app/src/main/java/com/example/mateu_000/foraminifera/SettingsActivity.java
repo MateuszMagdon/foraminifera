@@ -8,14 +8,14 @@ import android.widget.EditText;
 
 import Helpers.SettingsContainer;
 
-public class Main2Activity extends ActionBarActivity {
+public class SettingsActivity extends ActionBarActivity {
 
     private static final double DEG = Math.PI / 180;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_settings);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
