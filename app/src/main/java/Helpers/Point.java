@@ -37,9 +37,9 @@ public class Point {
     }
 
     public Point Rotate(Vector rotationVector){
-        RotateZ(rotationVector.getZ());
-        RotateY(rotationVector.getY());
         RotateX(rotationVector.getX());
+        RotateY(rotationVector.getY());
+        RotateZ(rotationVector.getZ());
         return this;
     }
 
@@ -97,6 +97,18 @@ public class Point {
         z /= distanceToCenter;
 
         return this;
+    }
+
+    public Point CastOnXYplane(){
+        return new Point(x, y, 0);
+    }
+
+    public Point CastOnXZplane(){
+        return new Point(x, 0, z);
+    }
+
+    public Point CastOnYZplane(){
+        return new Point(0, y, z);
     }
 
     public Point Clone(){

@@ -19,7 +19,7 @@ public class SphereFactory {
     private FloatBuffer baseSphereVerticesBuffer;
     private LinkedList<Point> baseSpherePointsList;
 
-    private static final int stepSize = 4;
+    private static final int stepSize = 3;
 
     private static final int pointsPerVertex = 3;
     private static final int floatSize = Float.SIZE / Byte.SIZE;
@@ -124,13 +124,15 @@ public class SphereFactory {
 
     public void RotateSphereToAperture(Sphere sphere, Point aperture, Vector scaleRate, ReferenceSpace referenceSpace){
         Vector scalingVector = scaleRate.Clone().Multiply(sphere.GetRadius());
-        Point apertureNormalized = normalizeAperturePosition(sphere, aperture);
-        Point initialAperture = new Point(0, 1, 0);
-        Point apertureOnXYPlane = new Point(apertureNormalized.getX(), apertureNormalized.getY(), 0);
-        double zRotation = calculateRotation(initialAperture, apertureOnXYPlane);
-        double yRotation = calculateRotation(apertureOnXYPlane, apertureNormalized);
 
-        Vector rotationVector = new Vector(0, yRotation, zRotation);
+        Point initialAperture = new Point(0, 1, 0);
+        Point apertureNormalized = normalizeAperturePosition(sphere, aperture);
+        Point apertureOnXYPlane = apertureNormalized.CastOnXYplane().Clone().Normalize();
+
+        double zRotation = calculateZrotation(initialAperture, apertureOnXYPlane);
+        double xRotation = calculateXrotation(apertureOnXYPlane, apertureNormalized);
+
+        Vector rotationVector = new Vector(xRotation, 0, zRotation);
         Vector translationVector = sphere.GetCenter().GetVector();
 
         LinkedList<Point> transformatedPointsList = transformatePoints(scalingVector, rotationVector, translationVector, referenceSpace);
@@ -146,9 +148,26 @@ public class SphereFactory {
         return aperture.Clone().Translate(returningVector).Normalize();
     }
 
-    private double calculateRotation(Point initialApperture, Point appertureOnXYPlane) {
-        double initialToXYAppertureDistance = initialApperture.GetDistance(appertureOnXYPlane);
-        return 2 * Math.PI - 2 * Math.asin(0.5 * initialToXYAppertureDistance); // should be divided by radius, which in base sphere equals 1
+    private double calculateZrotation(Point fromPoint, Point toPoint) {
+        double distance = fromPoint.GetDistance(toPoint);
+        double angle = 2 * Math.asin(0.5 * distance);// should be divided by radius, which in base sphere equals 1
+
+        if (toPoint.getX() > 0) {
+            return 2 * Math.PI - angle;
+        } else {
+            return angle;
+        }
+    }
+
+    private double calculateXrotation(Point fromPoint, Point toPoint) {
+        double distance = fromPoint.GetDistance(toPoint);
+        double angle = 2 * Math.asin(0.5 * distance);// should be divided by radius, which in base sphere equals 1
+
+        if (toPoint.getZ() > 0) {
+            return angle;
+        } else {
+            return 2 * Math.PI - angle;
+        }
     }
 
     public void CalculateTrianglesForSphere(Sphere sphere, List<Shell> previousShells){

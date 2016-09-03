@@ -46,7 +46,7 @@ public class Shell {
 
         initializeShell(center, radius, thickness, previousShell, scaleRate, sphereFactory);
 
-        aperturePosition = new Point(0, 1.1d, 0);//TODO
+        aperturePosition = new Point(0, 1.1d, 0);
         createOpenGLSpheres();
 
         nextShellGrowthAxis = aperturePosition.GetVector(center);
@@ -99,9 +99,8 @@ public class Shell {
             double minDistance = 0;
 
             for (Point point : sphere.points) {
-                double distance = point.GetDistance(previousShell.aperturePosition);
-                double previousOuterRadius = previousShell.radius + previousShell.thickness;
-                if (distance > previousOuterRadius){
+                if (!isInsidePrevSpheres(point, GetPreviousShells())){
+                    double distance = point.GetDistance(previousShell.aperturePosition);
                     if (min == null || distance < minDistance){
                         min = point;
                         minDistance = distance;
@@ -111,6 +110,17 @@ public class Shell {
 
             aperturePosition = min;
         }
+    }
+
+    private boolean isInsidePrevSpheres(Point point, LinkedList<Shell> shells) {
+
+        for (Shell shell : shells){
+            boolean isInsideSphere = shell.getCenter().GetDistance(point) < shell.getRadius() + shell.getThickness();
+            if (isInsideSphere){
+                return true;
+            }
+        }
+        return false;
     }
 
     private ReferenceSpace calculateNextReferenceSpace() {
