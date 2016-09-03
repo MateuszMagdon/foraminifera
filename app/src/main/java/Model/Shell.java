@@ -49,7 +49,7 @@ public class Shell {
         aperturePosition = new Point(0, 1.1d, 0);
         createOpenGLSpheres();
 
-        nextShellGrowthAxis = aperturePosition.GetVector(center);
+        nextShellGrowthAxis = aperturePosition.GetVector(center).Normalize();
         nextShellReferenceSpace = calculateNextReferenceSpace();
     }
 
@@ -156,7 +156,7 @@ public class Shell {
     }
 
     public Vector getNextShellGrowthAxis() {
-        return nextShellGrowthAxis.Clone();
+        return nextShellGrowthAxis.Clone().Normalize();
     }
 
     public Sphere getInnerSphere() {
