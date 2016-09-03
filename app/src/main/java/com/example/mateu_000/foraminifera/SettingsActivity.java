@@ -16,7 +16,6 @@ public class SettingsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void GoToView(View view) {
@@ -24,8 +23,13 @@ public class SettingsActivity extends ActionBarActivity {
         EditText translationFactorEditText = (EditText) findViewById(R.id.translation_factor);
         EditText growthFactorEditText = (EditText) findViewById(R.id.growth_factor);
         EditText thicknessGrowthFactorEditText = (EditText) findViewById(R.id.thickness_growth_factor);
+
         EditText deviationAngleEditText = (EditText) findViewById(R.id.deviation_angle);
         EditText rotationAngleEditText = (EditText) findViewById(R.id.rotation_angle);
+
+        EditText clippingXEditText = (EditText) findViewById(R.id.clipping_x);
+        EditText clippingYEditText = (EditText) findViewById(R.id.clipping_y);
+        EditText clippingZEditText = (EditText) findViewById(R.id.clipping_z);
 
         SettingsContainer.numberOfChambers = getValueInt(numberOfChambersEditText, 4);
         SettingsContainer.translationFactor = getValue(translationFactorEditText, 0.8d);
@@ -34,6 +38,11 @@ public class SettingsActivity extends ActionBarActivity {
 
         SettingsContainer.deviationAngle = getValue(deviationAngleEditText, 30) * DEG;
         SettingsContainer.rotationAngle = getValue(rotationAngleEditText, 50) * DEG;
+
+        SettingsContainer.clippingX = getValue(clippingXEditText, 100d);
+        SettingsContainer.clippingY = getValue(clippingYEditText, 100d);
+        SettingsContainer.clippingZ = getValue(clippingZEditText, 100d);
+
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

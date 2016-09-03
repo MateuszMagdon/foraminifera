@@ -24,6 +24,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int mLightPosHandle;
     private int mPositionHandle;
     private int mColorHandle;
+    private int mClippingHandle;
 
     private final int mPositionDataSize = 3;
 
@@ -50,9 +51,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public volatile float mScaleFactor = 1.0f;
 
     private Foraminifera foraminifera;
+    private float[] mClippingVector;
 
-    public MyGLRenderer(Foraminifera foraminifera) {
+    public MyGLRenderer(Foraminifera foraminifera, float[] clippingVector) {
         this.foraminifera = foraminifera;
+        mClippingVector = clippingVector;
     }
 
     @Override
@@ -113,7 +116,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         final float bottom = -1.0f;
         final float top = 1.0f;
         final float near = 1.0f;
-        final float far = 15.0f;
+        final float far = 20.0f;
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
 
@@ -127,6 +130,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         prepareShaderInputHandlers();
 
+        GLES20.glUniform3f(mClippingHandle, mClippingVector[0], mClippingVector[1], mClippingVector[2]);
+
         iluminateScene();
 
         drawForaminifera();
@@ -137,6 +142,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mMVMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVMatrix");
         mLightPosHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_LightPos");
         mColorHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_Color");
+        mClippingHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_Clipping");
 
         mPositionHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Position");
     }

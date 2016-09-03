@@ -108,6 +108,54 @@
             android:gravity="right"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clipping_x"/>
+
+        <EditText
+            android:id="@+id/clipping_x"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clipping_y"/>
+
+        <EditText
+            android:id="@+id/clipping_y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clipping_z"/>
+
+        <EditText
+            android:id="@+id/clipping_z"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"/>
+    </LinearLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -42,8 +42,9 @@ public class MainActivity extends ActionBarActivity
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
             Foraminifera foraminifera = buildForaminifera();
+            float[] clipping = buildClippingVector();
 
-            mRenderer = new MyGLRenderer(foraminifera);
+            mRenderer = new MyGLRenderer(foraminifera, clipping);
             mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
         }
         else
@@ -61,6 +62,14 @@ public class MainActivity extends ActionBarActivity
             foraminifera.addNextShell();
         }
         return foraminifera;
+    }
+
+    private float[] buildClippingVector(){
+        float[] clippingVector = new float[3];
+        clippingVector[0] = (float) SettingsContainer.clippingX;
+        clippingVector[1] = (float) SettingsContainer.clippingY;
+        clippingVector[2] = (float) SettingsContainer.clippingZ;
+        return clippingVector;
     }
 
     @Override

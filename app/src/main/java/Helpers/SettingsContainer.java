@@ -17,4 +17,9 @@ public class SettingsContainer {
     public static double scaleX = 1.0;
     public static double scaleY = 1.0;
     public static double scaleZ = 1.0;
+
+    //clipping panes positions
+    public static double clippingX;
+    public static double clippingY;
+    public static double clippingZ;
 }

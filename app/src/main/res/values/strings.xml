@@ -12,4 +12,8 @@
     <string name="deviation_angle">Deviation angle</string>
     <string name="rotation_angle">Rotation angle</string>
 
+    <string name="clipping_x">Clipping X-pane position</string>
+    <string name="clipping_y">Clipping Y-pane position</string>
+    <string name="clipping_z">Clipping Z-pane position</string>
+
 </resources>
