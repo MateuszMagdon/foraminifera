@@ -149,8 +149,7 @@ public class SphereFactory {
     }
 
     private double calculateZrotation(Point fromPoint, Point toPoint) {
-        double distance = fromPoint.GetDistance(toPoint);
-        double angle = 2 * Math.asin(0.5 * distance);// should be divided by radius, which in base sphere equals 1
+        double angle = calculateAngle(fromPoint, toPoint);
 
         if (toPoint.getX() > 0) {
             return 2 * Math.PI - angle;
@@ -160,14 +159,18 @@ public class SphereFactory {
     }
 
     private double calculateXrotation(Point fromPoint, Point toPoint) {
-        double distance = fromPoint.GetDistance(toPoint);
-        double angle = 2 * Math.asin(0.5 * distance);// should be divided by radius, which in base sphere equals 1
+        double angle = calculateAngle(fromPoint, toPoint);
 
         if (toPoint.getZ() > 0) {
             return angle;
         } else {
             return 2 * Math.PI - angle;
         }
+    }
+
+    private double calculateAngle(Point fromPoint, Point toPoint) {
+        double distance = fromPoint.GetDistance(toPoint);
+        return 2 * Math.asin(0.5 * distance);// should be divided by radius, which in base sphere equals 1
     }
 
     public void CalculateTrianglesForSphere(Sphere sphere, List<Shell> previousShells){
