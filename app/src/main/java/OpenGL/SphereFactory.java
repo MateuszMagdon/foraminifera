@@ -19,7 +19,7 @@ public class SphereFactory {
     private FloatBuffer baseSphereVerticesBuffer;
     private LinkedList<Point> baseSpherePointsList;
 
-    private static final int stepSize = 8;
+    private static final int stepSize = 4;
 
     private static final int pointsPerVertex = 3;
     private static final int floatSize = Float.SIZE / Byte.SIZE;
@@ -162,7 +162,7 @@ public class SphereFactory {
     private int translatePointsToBuffer(LinkedList<Point> copiedPoints, FloatBuffer newBuffer, List<Shell> previousShells) {
         int addedPoints = 0;
 
-        int i = copiedPoints.size() - 2 * pointsPerPI;
+        int i = copiedPoints.size() - 4 * pointsPerPI;
         for (int index = 0; index < i; index++){
             Point p1 = copiedPoints.get(index);
             Point p3 = copiedPoints.get(2*pointsPerPI + index);
