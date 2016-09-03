@@ -12,36 +12,57 @@ public class SettingsActivity extends ActionBarActivity {
 
     private static final double DEG = Math.PI / 180;
 
+    private EditText numberOfChambersEditText;
+    private EditText translationFactorEditText;
+    private EditText growthFactorEditText;
+    private EditText thicknessGrowthFactorEditText;
+    private EditText deviationAngleEditText;
+    private EditText rotationAngleEditText;
+    private EditText clippingXEditText;
+    private EditText clippingYEditText;
+    private EditText clippingZEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        numberOfChambersEditText =  (EditText) findViewById(R.id.number_of_chambers);
+        translationFactorEditText = (EditText) findViewById(R.id.translation_factor);
+        growthFactorEditText = (EditText) findViewById(R.id.growth_factor);
+        thicknessGrowthFactorEditText = (EditText) findViewById(R.id.thickness_growth_factor);
+
+        deviationAngleEditText = (EditText) findViewById(R.id.deviation_angle);
+        rotationAngleEditText = (EditText) findViewById(R.id.rotation_angle);
+
+        clippingXEditText = (EditText) findViewById(R.id.clipping_x);
+        clippingYEditText = (EditText) findViewById(R.id.clipping_y);
+        clippingZEditText = (EditText) findViewById(R.id.clipping_z);
+
+        setHints();
+    }
+
+    private void setHints() {
+        numberOfChambersEditText.setHint(Integer.toString(SettingsContainer.numberOfChambers));
+        translationFactorEditText.setHint(Double.toString(SettingsContainer.translationFactor));
+        growthFactorEditText.setHint(Double.toString(SettingsContainer.growthFactor));
+        thicknessGrowthFactorEditText.setHint(Double.toString(SettingsContainer.thicknessGrowthFactor));
+        deviationAngleEditText.setHint(Double.toString(SettingsContainer.deviationAngle));
+        rotationAngleEditText.setHint(Double.toString(SettingsContainer.rotationAngle));
     }
 
     public void GoToView(View view) {
-        EditText numberOfChambersEditText = (EditText) findViewById(R.id.number_of_chambers);
-        EditText translationFactorEditText = (EditText) findViewById(R.id.translation_factor);
-        EditText growthFactorEditText = (EditText) findViewById(R.id.growth_factor);
-        EditText thicknessGrowthFactorEditText = (EditText) findViewById(R.id.thickness_growth_factor);
+        SettingsContainer.numberOfChambers = getValueInt(numberOfChambersEditText, SettingsContainer.numberOfChambers);
+        SettingsContainer.translationFactor = getValue(translationFactorEditText, SettingsContainer.translationFactor);
+        SettingsContainer.growthFactor = getValue(growthFactorEditText, SettingsContainer.growthFactor);
+        SettingsContainer.thicknessGrowthFactor = getValue(thicknessGrowthFactorEditText, SettingsContainer.thicknessGrowthFactor);
 
-        EditText deviationAngleEditText = (EditText) findViewById(R.id.deviation_angle);
-        EditText rotationAngleEditText = (EditText) findViewById(R.id.rotation_angle);
+        SettingsContainer.deviationAngle = getValue(deviationAngleEditText, SettingsContainer.deviationAngle) * DEG;
+        SettingsContainer.rotationAngle = getValue(rotationAngleEditText, SettingsContainer.rotationAngle) * DEG;
 
-        EditText clippingXEditText = (EditText) findViewById(R.id.clipping_x);
-        EditText clippingYEditText = (EditText) findViewById(R.id.clipping_y);
-        EditText clippingZEditText = (EditText) findViewById(R.id.clipping_z);
-
-        SettingsContainer.numberOfChambers = getValueInt(numberOfChambersEditText, 4);
-        SettingsContainer.translationFactor = getValue(translationFactorEditText, 0.8d);
-        SettingsContainer.growthFactor = getValue(growthFactorEditText, 1.4d);
-        SettingsContainer.thicknessGrowthFactor = getValue(thicknessGrowthFactorEditText, 1.1d);
-
-        SettingsContainer.deviationAngle = getValue(deviationAngleEditText, 30) * DEG;
-        SettingsContainer.rotationAngle = getValue(rotationAngleEditText, 50) * DEG;
-
-        SettingsContainer.clippingX = getValue(clippingXEditText, 100d);
-        SettingsContainer.clippingY = getValue(clippingYEditText, 100d);
-        SettingsContainer.clippingZ = getValue(clippingZEditText, 100d);
+        SettingsContainer.clippingX = getValue(clippingXEditText, SettingsContainer.clippingX);
+        SettingsContainer.clippingY = getValue(clippingYEditText, SettingsContainer.clippingY);
+        SettingsContainer.clippingZ = getValue(clippingZEditText, SettingsContainer.clippingZ);
 
 
         Intent intent = new Intent(this, MainActivity.class);

@@ -5,7 +5,6 @@
     <string name="title_activity_main2">Main2Activity</string>
 
     <string name="number_of_chambers">Number of chambers</string>
-    <string name="generate_button">Generate</string>
     <string name="translation_factor">Translation factor</string>
     <string name="growth_factor">Growth factor</string>
     <string name="thickness_growth_factor">Thickness growth factor</string>
@@ -16,4 +15,5 @@
     <string name="clipping_y">Clipping Y-pane position</string>
     <string name="clipping_z">Clipping Z-pane position</string>
 
+    <string name="generate_button">Generate</string>
 </resources>
