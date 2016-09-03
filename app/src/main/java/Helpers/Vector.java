@@ -68,6 +68,13 @@ public class Vector {
         return this;
     }
 
+    public Vector Cross(Vector v){
+        return new Vector(
+                this.y * v.z - this.z * v.y,
+                this.z * v.x - this.x * v.z,
+                this.x * v.y - this.y * v.x);
+    }
+
     public Vector DifferenceVector(Vector newVector){
 
         return new Vector(newVector.x - x, newVector.y - y, newVector.z - z);

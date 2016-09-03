@@ -1,6 +1,8 @@
 package Model;
 
 
+import java.util.LinkedList;
+
 import Helpers.Point;
 import Helpers.ReferenceSpace;
 import Helpers.Vector;
@@ -44,7 +46,9 @@ public class Shell {
 
         initializeShell(center, radius, thickness, previousShell, scaleRate, sphereFactory);
 
-        aperturePosition = new Point(0, 1.0d, 0);
+        aperturePosition = new Point(0, 1.1d, 0);//TODO
+        createOpenGLSpheres();
+
         nextShellGrowthAxis = aperturePosition.GetVector(center);
         nextShellReferenceSpace = calculateNextReferenceSpace();
     }
@@ -56,7 +60,8 @@ public class Shell {
 
         initializeShell(center, radius, thickness, previousShell, scaleRate, sphereFactory);
 
-        aperturePosition = calculateAperturePosition(previousShell);
+        createOpenGLSpheres();
+
         nextShellGrowthAxis = aperturePosition.GetVector(previousShell.aperturePosition).Normalize();
         nextShellReferenceSpace = calculateNextReferenceSpace();
     }
@@ -71,42 +76,60 @@ public class Shell {
         this.thickness = thickness;
 
         this.scaleRate = scaleRate.Clone();
-
-        createOpenGLSpheres();
     }
 
     private void createOpenGLSpheres() {
-        outerSphere = sphereFactory.CreateSphere(radius + thickness, center, scaleRate, referenceSpace);
-        sphereFactory.CalculateTrianglesForSphere(outerSphere);
+        LinkedList<Shell> previousShells = GetPreviousShells();
 
+        outerSphere = sphereFactory.CreateSphere(radius + thickness, center, scaleRate, referenceSpace);
         innerSphere = sphereFactory.CreateSphere(radius, center, scaleRate, referenceSpace);
-        sphereFactory.CalculateTrianglesForSphere(innerSphere);
+
+        calculateAperturePosition(outerSphere);
+
+        sphereFactory.RotateSphereToAperture(outerSphere, aperturePosition, scaleRate, referenceSpace);
+        sphereFactory.CalculateTrianglesForSphere(outerSphere, previousShells);
+
+        sphereFactory.RotateSphereToAperture(innerSphere, aperturePosition, scaleRate, referenceSpace);
+        sphereFactory.CalculateTrianglesForSphere(innerSphere, previousShells);
     }
 
-    private Point calculateAperturePosition(Shell previousShell) {
-        Point min = null;
-        double minDistance = 0;
+    private void calculateAperturePosition(Sphere sphere) {
+        if (aperturePosition == null){
+            Point min = null;
+            double minDistance = 0;
 
-        for (Point point : outerSphere.points) {
-            double distance = point.GetDistance(previousShell.aperturePosition);
-            double previousOuterRadius = previousShell.radius + previousShell.thickness;
-            if (distance > previousOuterRadius){
-                if (min == null || distance < minDistance){
-                    min = point;
-                    minDistance = distance;
+            for (Point point : sphere.points) {
+                double distance = point.GetDistance(previousShell.aperturePosition);
+                double previousOuterRadius = previousShell.radius + previousShell.thickness;
+                if (distance > previousOuterRadius){
+                    if (min == null || distance < minDistance){
+                        min = point;
+                        minDistance = distance;
+                    }
                 }
             }
+
+            aperturePosition = min;
         }
-        return min;
     }
 
     private ReferenceSpace calculateNextReferenceSpace() {
         Vector diffOnYAxis = referenceSpace.getY().DifferenceVector(nextShellGrowthAxis);
-
-
         //TODO what should be x and z?
 
         return new ReferenceSpace(new Vector(0,0,0), nextShellGrowthAxis, new Vector(0,0,0));
+    }
+
+    public LinkedList<Shell> GetPreviousShells(){
+        LinkedList<Shell> previousShells = new LinkedList<>();
+
+        Shell previous = previousShell;
+        while (previous != null){
+            previousShells.add(previous);
+            previous = previous.previousShell;
+        }
+
+        return previousShells;
     }
 
 
@@ -132,5 +155,9 @@ public class Shell {
 
     public Sphere getOuterSphere() {
         return outerSphere;
+    }
+
+    public Point getCenter() {
+        return center;
     }
 }

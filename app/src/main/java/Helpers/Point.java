@@ -6,15 +6,17 @@ public class Point {
     private double z;
 
     public Point(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        assignNewValues(x, y, z);
     }
 
     public Point(double sinPhi, double cosPhi, double sinTheta, double cosTheta){
-        x = sinPhi * cosTheta;
-        y = cosPhi;
-        z = sinPhi * sinTheta;
+        assignNewValues(sinPhi * cosTheta, cosPhi, sinPhi * sinTheta);
+    }
+
+    private void assignNewValues(double newX, double newY, double newZ) {
+        x = newX;
+        y = newY;
+        z = newZ;
     }
 
     public Point Scale(Vector scalingVector){
@@ -28,10 +30,54 @@ public class Point {
         x *= scalingVector.getX();
         y *= scalingVector.getY();
         z *= scalingVector.getZ();
+
+        //TODO rotate to reference space
+
         return this;
     }
 
-    public Point Rotate(){
+    public Point Rotate(Vector rotationVector){
+        RotateZ(rotationVector.getZ());
+        RotateY(rotationVector.getY());
+        RotateX(rotationVector.getX());
+        return this;
+    }
+
+    public Point RotateX(double angle){
+        double sinRot = Math.sin(angle);
+        double cosRot = Math.cos(angle);
+
+        double newX = x;
+        double newY = y * cosRot - z * sinRot;
+        double newZ = y * sinRot + z * cosRot;
+
+        assignNewValues(newX, newY, newZ);
+
+        return this;
+    }
+
+    public Point RotateY(double angle){
+        double sinRot = Math.sin(angle);
+        double cosRot = Math.cos(angle);
+
+        double newX = z * sinRot + x * cosRot;
+        double newY = y;
+        double newZ = z * cosRot - x * sinRot;
+
+        assignNewValues(newX, newY, newZ);
+
+        return this;
+    }
+
+    public Point RotateZ(double angle){
+        double sinRot = Math.sin(angle);
+        double cosRot = Math.cos(angle);
+
+        double newX = x * cosRot - y * sinRot;
+        double newY = x * sinRot + y * cosRot;
+        double newZ = z;
+
+        assignNewValues(newX, newY, newZ);
 
         return this;
     }
@@ -40,6 +86,16 @@ public class Point {
         x += translationVector.getX();
         y += translationVector.getY();
         z += translationVector.getZ();
+        return this;
+    }
+
+    public Point Normalize(){
+        double distanceToCenter = this.GetDistance(new Point(0, 0, 0));
+
+        x /= distanceToCenter;
+        y /= distanceToCenter;
+        z /= distanceToCenter;
+
         return this;
     }
 

@@ -26,4 +26,11 @@ public class Sphere {
         this.pointsCount = pointsCount;
     }
 
+    public Point GetCenter() {
+        return center;
+    }
+
+    public double GetRadius() {
+        return radius;
+    }
 }
