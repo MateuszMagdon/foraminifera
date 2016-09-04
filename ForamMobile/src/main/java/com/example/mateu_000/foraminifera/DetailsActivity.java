@@ -19,13 +19,20 @@ public class DetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        displayResults(SettingsContainer.detailsCalculationResults);
     }
 
     public void GetDetails(View view) {
-        TextView detailsTextView = (TextView) findViewById(R.id.details);
 
         MetricsEngine metricsEngine = new MetricsEngine(SettingsContainer.foraminifera);
         LinkedList<CalculationResult> results = metricsEngine.CalculateMetrics();
+        SettingsContainer.detailsCalculationResults = results;
+        displayResults(results);
+    }
+
+    private void displayResults(LinkedList<CalculationResult> results) {
+        TextView detailsTextView = (TextView) findViewById(R.id.details);
 
         StringBuilder sb = new StringBuilder();
         for(CalculationResult result : results){

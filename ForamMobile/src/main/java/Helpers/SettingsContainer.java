@@ -1,5 +1,8 @@
 package Helpers;
 
+import java.util.LinkedList;
+
+import Metrics.CalculationResult;
 import Model.Foraminifera;
 
 public class SettingsContainer {
@@ -28,4 +31,5 @@ public class SettingsContainer {
 
     //shouldn't be here
     public static Foraminifera foraminifera = null;
+    public static LinkedList<CalculationResult> detailsCalculationResults = new LinkedList<>();
 }
