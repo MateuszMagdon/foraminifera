@@ -1,5 +1,6 @@
 package Metrics;
 
+import Helpers.Metrics;
 import Model.Foraminifera;
 import Model.Shell;
 
@@ -21,7 +22,15 @@ public class XCalculator implements IMetricCalculator {
 
         double maxX = max.getCenter().getX() + max.getRadius() + max.getThickness();
         double minX = min.getCenter().getX() - min.getRadius() - min.getThickness();
-        return maxX - minX;
+
+        Metrics metrics = foraminifera.getMetrics();
+        metrics.setMaxX(maxX);
+        metrics.setMinX(minX);
+
+        double result = maxX - minX;
+        metrics.setSizeX(result);
+
+        return result;
     }
 
     @Override

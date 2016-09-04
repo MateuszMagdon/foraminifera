@@ -5,12 +5,14 @@ import java.util.LinkedList;
 import Helpers.Point;
 import Helpers.SettingsContainer;
 import Helpers.Vector;
+import Helpers.Metrics;
 import OpenGL.SphereFactory;
 
 public class Foraminifera {
     private final SphereFactory sphereFactory;
     private final Vector scaleVector;
     private LinkedList<Shell> shells = new LinkedList<>();
+    private Metrics metrics = new Metrics();
 
     public Foraminifera()
     {
@@ -63,5 +65,9 @@ public class Foraminifera {
 
     public LinkedList<Shell> getShells() {
         return (LinkedList<Shell>) shells.clone();
+    }
+
+    public Metrics getMetrics() {
+        return metrics;
     }
 }

@@ -13,11 +13,11 @@ public class MetricsEngine {
 
         calculators = new LinkedList<>();
 
-        calculators.add(new VolumeCalculator());
-        calculators.add(new MaterialCalculator());
         calculators.add(new XCalculator());
         calculators.add(new YCalculator());
         calculators.add(new ZCalculator());
+        calculators.add(new VolumeCalculator());
+        calculators.add(new MaterialCalculator());
     }
 
     public LinkedList<CalculationResult> CalculateMetrics(){

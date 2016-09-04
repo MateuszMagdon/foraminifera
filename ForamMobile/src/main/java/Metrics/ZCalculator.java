@@ -1,5 +1,6 @@
 package Metrics;
 
+import Helpers.Metrics;
 import Model.Foraminifera;
 import Model.Shell;
 
@@ -21,7 +22,15 @@ public class ZCalculator implements IMetricCalculator {
 
         double maxZ = max.getCenter().getZ() + max.getRadius() + max.getThickness();
         double minZ = min.getCenter().getZ() - min.getRadius() - min.getThickness();
-        return maxZ - minZ;
+
+        Metrics metrics = foraminifera.getMetrics();
+        metrics.setMaxZ(maxZ);
+        metrics.setMinZ(minZ);
+
+        double result = maxZ - minZ;
+        metrics.setSizeZ(result);
+
+        return result;
     }
 
     @Override

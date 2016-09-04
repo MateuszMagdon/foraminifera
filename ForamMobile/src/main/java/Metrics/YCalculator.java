@@ -1,5 +1,6 @@
 package Metrics;
 
+import Helpers.Metrics;
 import Model.Foraminifera;
 import Model.Shell;
 
@@ -22,7 +23,15 @@ public class YCalculator implements IMetricCalculator {
 
         double maxY = max.getCenter().getY() + max.getRadius() + max.getThickness();
         double minY = min.getCenter().getY() - min.getRadius() - min.getThickness();
-        return maxY - minY;
+
+        Metrics metrics = foraminifera.getMetrics();
+        metrics.setMaxY(maxY);
+        metrics.setMinY(minY);
+
+        double result = maxY - minY;
+        metrics.setSizeY(result);
+
+        return result;
     }
 
     @Override
