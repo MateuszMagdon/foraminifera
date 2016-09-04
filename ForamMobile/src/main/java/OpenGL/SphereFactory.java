@@ -206,12 +206,11 @@ public class SphereFactory {
                     p4_inside = false;
 
             for (Shell shell : previousShells){
-                Point shellCenter = shell.getCenter();
-                double shellRadius = shell.getRadius() + shell.getThickness();
-                p1_inside |= isInsideShell(p1, shellCenter, shellRadius);
-                p2_inside |= isInsideShell(p2, shellCenter, shellRadius);
-                p3_inside |= isInsideShell(p3, shellCenter, shellRadius);
-                p4_inside |= isInsideShell(p4, shellCenter, shellRadius);
+                Sphere outerSphere = shell.getOuterSphere();
+                p1_inside |= outerSphere.IsPointInside(p1);
+                p2_inside |= outerSphere.IsPointInside(p2);
+                p3_inside |= outerSphere.IsPointInside(p3);
+                p4_inside |= outerSphere.IsPointInside(p4);
             }
 
             if(!(p1_inside && p2_inside && p3_inside)) {
@@ -226,13 +225,6 @@ public class SphereFactory {
         }
 
         return addedPoints;
-    }
-
-    private boolean isInsideShell(Point p, Point shellCenter, double shellRadius) {
-        if (p.GetDistance(shellCenter) < shellRadius){
-            return true;
-        }
-        return false;
     }
 
     private void insertTriangleToBuffer(FloatBuffer sphereVerticesBuffer, Point point1, Point point2, Point point3) {

@@ -26,6 +26,14 @@ public class Sphere {
         this.pointsCount = pointsCount;
     }
 
+    public boolean IsPointInside(Point point){
+        double distanceToCenter = point.GetDistance(center);
+        if (distanceToCenter < radius){
+            return true;
+        }
+        return false;
+    }
+
     public Point GetCenter() {
         return center;
     }

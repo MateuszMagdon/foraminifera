@@ -18,7 +18,7 @@ public class OveralVolumeCalculator extends MonteCarloVolumeCalculator {
     protected boolean isInsideShells(Point point, LinkedList<Shell> shells) {
 
         for (Shell shell : shells){
-            boolean isInsideSphere = shell.getCenter().GetDistance(point) < shell.getRadius() + shell.getThickness();
+            boolean isInsideSphere = shell.getOuterSphere().IsPointInside(point);
             if (isInsideSphere){
                 return true;
             }

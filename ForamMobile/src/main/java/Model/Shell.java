@@ -115,7 +115,7 @@ public class Shell {
     private boolean isInsidePrevSpheres(Point point, LinkedList<Shell> shells) {
 
         for (Shell shell : shells){
-            boolean isInsideSphere = shell.getCenter().GetDistance(point) < shell.getRadius() + shell.getThickness();
+            boolean isInsideSphere = shell.outerSphere.IsPointInside(point);
             if (isInsideSphere){
                 return true;
             }
@@ -125,7 +125,7 @@ public class Shell {
 
     private ReferenceSpace calculateNextReferenceSpace() {
         Vector diffOnYAxis = referenceSpace.getY().DifferenceVector(nextShellGrowthAxis);
-        //TODO what should be x and z?
+        //TODO X and Z needs to be rotated (just like Sphere is in Sphere factory in RotateSphereToAperture());
 
         return new ReferenceSpace(new Vector(0,0,0), nextShellGrowthAxis, new Vector(0,0,0));
     }

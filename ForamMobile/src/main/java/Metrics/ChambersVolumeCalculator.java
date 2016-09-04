@@ -18,7 +18,7 @@ public class ChambersVolumeCalculator extends MonteCarloVolumeCalculator {
     protected boolean isInsideShells(Point point, LinkedList<Shell> shells) {
 
         for (Shell shell : shells){
-            boolean isInsideSphere = shell.getCenter().GetDistance(point) < shell.getRadius();
+            boolean isInsideSphere = shell.getInnerSphere().IsPointInside(point);
             if (isInsideSphere){
                 return true;
             }

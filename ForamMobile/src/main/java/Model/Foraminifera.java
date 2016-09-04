@@ -52,7 +52,7 @@ public class Foraminifera {
 
     private Vector calculateGrowthVector(Shell previousShell) {
         Vector baseVector = previousShell.getNextShellGrowthAxis();
-        return baseVector.Multiply(previousShell.getRadius() + previousShell.getThickness())
+        return baseVector.Multiply(previousShell.getOuterSphere().GetRadius())
                 .Deflect(SettingsContainer.deviationAngle)
                 .Rotate(SettingsContainer.rotationAngle, baseVector)
                 .Multiply(SettingsContainer.growthFactor)

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import Helpers.Point;
 import Model.Foraminifera;
 import Model.Shell;
+import OpenGL.Sphere;
 
 public class MaterialVolumeCalculator extends MonteCarloVolumeCalculator {
     @Override
@@ -20,10 +21,9 @@ public class MaterialVolumeCalculator extends MonteCarloVolumeCalculator {
     protected boolean isInsideShells(Point point, LinkedList<Shell> shells) {
 
         for (Shell shell : shells){
-            double distance = shell.getCenter().GetDistance(point);
-            boolean isInsideSphere = distance < shell.getRadius() + shell.getThickness();
-            boolean isInsideChamber = distance < shell.getRadius();
-            if (isInsideSphere && !isInsideChamber){
+            Sphere outerSphere = shell.getOuterSphere();
+            Sphere innerSphere = shell.getInnerSphere();
+            if (outerSphere.IsPointInside(point) && !innerSphere.IsPointInside(point)){
                 return true;
             }
         }
