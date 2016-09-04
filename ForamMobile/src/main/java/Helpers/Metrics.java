@@ -13,6 +13,7 @@ public class Metrics {
     private double sizeZ;
 
     private double volume;
+    private double chamberVolume;
     private double materialVolume;
 
     public double getMaterialVolume() {
@@ -101,5 +102,13 @@ public class Metrics {
 
     public void setSizeZ(double sizeZ) {
         this.sizeZ = sizeZ;
+    }
+
+    public double getChamberVolume() {
+        return chamberVolume;
+    }
+
+    public void setChamberVolume(double chamberVolume) {
+        this.chamberVolume = chamberVolume;
     }
 }

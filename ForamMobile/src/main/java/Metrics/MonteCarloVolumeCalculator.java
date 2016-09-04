@@ -7,10 +7,11 @@ import Helpers.Point;
 import Model.Foraminifera;
 import Model.Shell;
 
-public class VolumeCalculator implements IMetricCalculator {
-    @Override
+public abstract class MonteCarloVolumeCalculator implements IMetricCalculator {
+
+    protected int triesCount = 10000;
+
     public double CalculateMetric(Foraminifera foraminifera) {
-        int triesCount = 10000;
         int insideCount = 0;
 
         Metrics metrics = foraminifera.getMetrics();
@@ -31,22 +32,10 @@ public class VolumeCalculator implements IMetricCalculator {
             }
         }
 
-        double volume = ((double) insideCount / triesCount) * cubeVolume;
-        metrics.setVolume(volume);
-
-        return volume;
+        return ((double) insideCount / triesCount) * cubeVolume;
     }
 
-    private boolean isInsideShells(Point point, LinkedList<Shell> shells) {
-
-        for (Shell shell : shells){
-            boolean isInsideSphere = shell.getCenter().GetDistance(point) < shell.getRadius() + shell.getThickness();
-            if (isInsideSphere){
-                return true;
-            }
-        }
-        return false;
-    }
+    protected abstract boolean isInsideShells(Point point, LinkedList<Shell> shells);
 
     @Override
     public String GetName() {

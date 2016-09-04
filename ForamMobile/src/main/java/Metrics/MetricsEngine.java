@@ -16,8 +16,9 @@ public class MetricsEngine {
         calculators.add(new XCalculator());
         calculators.add(new YCalculator());
         calculators.add(new ZCalculator());
-        calculators.add(new VolumeCalculator());
-        calculators.add(new MaterialCalculator());
+        calculators.add(new OveralVolumeCalculator());
+        calculators.add(new ChambersVolumeCalculator());
+        calculators.add(new MaterialVolumeCalculator());
     }
 
     public LinkedList<CalculationResult> CalculateMetrics(){
