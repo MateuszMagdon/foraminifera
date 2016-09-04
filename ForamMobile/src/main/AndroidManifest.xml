@@ -21,7 +21,6 @@
             android:theme="@style/Theme.AppCompat.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -31,17 +30,13 @@
             android:label="@string/app_name"
             android:parentActivityName=".SettingsActivity"
             android:theme="@style/Theme.AppCompat.Light">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SettingsActivity" />
         </activity>
         <activity
             android:name=".DetailsActivity"
-            android:label="@string/title_activity_details"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.mateu_000.foraminifera.MainActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light">
         </activity>
     </application>
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -116,7 +117,12 @@ public class MainActivity extends ActionBarActivity
             case R.id.action_go_to_details:
                 GoToDetails();
                 break;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                break;
         }
         return true;
     }
+
+
 }
