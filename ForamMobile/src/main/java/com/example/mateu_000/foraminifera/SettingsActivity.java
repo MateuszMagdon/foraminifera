@@ -52,8 +52,8 @@ public class SettingsActivity extends ActionBarActivity {
         translationFactorEditText.setHint(Double.toString(SettingsContainer.translationFactor));
         growthFactorEditText.setHint(Double.toString(SettingsContainer.growthFactor));
         thicknessGrowthFactorEditText.setHint(Double.toString(SettingsContainer.thicknessGrowthFactor));
-        deviationAngleEditText.setHint(Double.toString(SettingsContainer.deviationAngle));
-        rotationAngleEditText.setHint(Double.toString(SettingsContainer.rotationAngle));
+        deviationAngleEditText.setHint(Double.toString(SettingsContainer.deviationAngleDegrees));
+        rotationAngleEditText.setHint(Double.toString(SettingsContainer.rotationAngleDegrees));
     }
 
     public void GoToView(View view) {
@@ -62,8 +62,10 @@ public class SettingsActivity extends ActionBarActivity {
         SettingsContainer.growthFactor = getValue(growthFactorEditText, SettingsContainer.growthFactor);
         SettingsContainer.thicknessGrowthFactor = getValue(thicknessGrowthFactorEditText, SettingsContainer.thicknessGrowthFactor);
 
-        SettingsContainer.deviationAngle = getValue(deviationAngleEditText, SettingsContainer.deviationAngle) * DEG;
-        SettingsContainer.rotationAngle = getValue(rotationAngleEditText, SettingsContainer.rotationAngle) * DEG;
+        SettingsContainer.deviationAngleDegrees = getValue(deviationAngleEditText, SettingsContainer.deviationAngleDegrees);
+        SettingsContainer.deviationAngle = SettingsContainer.deviationAngleDegrees * DEG;
+        SettingsContainer.rotationAngleDegrees = getValue(rotationAngleEditText, SettingsContainer.rotationAngleDegrees);
+        SettingsContainer.rotationAngle = SettingsContainer.rotationAngle * DEG;
 
         SettingsContainer.clippingX = getValue(clippingXEditText, SettingsContainer.clippingX);
         SettingsContainer.clippingY = getValue(clippingYEditText, SettingsContainer.clippingY);

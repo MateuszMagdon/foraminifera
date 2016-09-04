@@ -15,8 +15,11 @@ public class SettingsContainer {
     public static double growthFactor = 1.4d; //scaling rate of growth vector and radius
     public static double thicknessGrowthFactor = 1.1d; //scaling rate of thickness
 
-    public static double deviationAngle = 30;
-    public static double rotationAngle = 50;
+    public static double deviationAngleDegrees = 30;
+    public static double deviationAngle;
+
+    public static double rotationAngleDegrees = 50;
+    public static double rotationAngle;
 
     //additional scaling;
     public static double scaleX = 1.0;
