@@ -10,7 +10,6 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import Helpers.SettingsContainer;
 import Model.Foraminifera;
 import Model.Shell;
 
@@ -65,7 +64,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //GLES20.glEnable(GLES20.GL_CULL_FACE); //draw only trangles which are facing us
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        setProjectionMatrix();
+        setViewMatrix();
 
         compileShaders();
     }
@@ -81,7 +80,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 new String[] {"a_Position"});
     }
 
-    private void setProjectionMatrix() {
+    private void setViewMatrix() {
         // Position the eye in front of the origin.
         final float eyeX = 0.0f;
         final float eyeY = 0.0f;
@@ -107,10 +106,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         // Set the OpenGL viewport to the same size as the surface.
         GLES20.glViewport(0, 0, width, height);
+        setProjectionMatrix(width, height);
 
+        Matrix.setIdentityM(mAccumulatedRotation, 0);
+    }
+
+    private void setProjectionMatrix(float width, int height) {
         // Create a new perspective projection matrix. The height will stay the same
         // while the width will vary as per aspect ratio.
-        final float ratio = (float) width / height;
+        final float ratio = width / height;
         final float left = -ratio;
         final float right = ratio;
         final float bottom = -1.0f;
@@ -119,8 +123,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         final float far = 20.0f;
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
-
-        Matrix.setIdentityM(mAccumulatedRotation, 0);
     }
 
     @Override
