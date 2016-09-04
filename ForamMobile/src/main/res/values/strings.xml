@@ -16,4 +16,7 @@
     <string name="clipping_z">Clipping Z-pane position</string>
 
     <string name="generate_button">Generate</string>
+
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="get_details">Get details</string>
 </resources>

@@ -1,5 +1,7 @@
 package Helpers;
 
+import Model.Foraminifera;
+
 public class SettingsContainer {
     public static int numberOfChambers = 3;
 
@@ -22,4 +24,8 @@ public class SettingsContainer {
     public static double clippingX = 100;
     public static double clippingY = 100;
     public static double clippingZ = 100;
+
+
+    //shouldn't be here
+    public static Foraminifera foraminifera = null;
 }

@@ -2,10 +2,15 @@ package com.example.mateu_000.foraminifera;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -42,6 +47,7 @@ public class MainActivity extends ActionBarActivity
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
             Foraminifera foraminifera = buildForaminifera();
+            SettingsContainer.foraminifera = foraminifera;
             float[] clipping = buildClippingVector();
 
             mRenderer = new MyGLRenderer(foraminifera, clipping);
@@ -72,6 +78,15 @@ public class MainActivity extends ActionBarActivity
         return clippingVector;
     }
 
+    public void GoToDetails(View view) {
+        GoToDetails();
+    }
+
+    private void GoToDetails(){
+        Intent intent = new Intent(this, DetailsActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onResume()
     {
@@ -86,5 +101,22 @@ public class MainActivity extends ActionBarActivity
         // The activity must call the GL surface view's onPause() on activity onPause().
         super.onPause();
         mGLSurfaceView.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_go_to_details:
+                GoToDetails();
+                break;
+        }
+        return true;
     }
 }
