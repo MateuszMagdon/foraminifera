@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.LinkedList;
+
 import Helpers.SettingsContainer;
 
 public class SettingsActivity extends ActionBarActivity {
@@ -26,6 +28,9 @@ public class SettingsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        SettingsContainer.foraminifera = null;
+        SettingsContainer.detailsCalculationResults = new LinkedList<>();
 
         numberOfChambersEditText =  (EditText) findViewById(R.id.number_of_chambers);
         translationFactorEditText = (EditText) findViewById(R.id.translation_factor);

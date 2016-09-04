@@ -47,11 +47,12 @@ public class MainActivity extends ActionBarActivity
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-            Foraminifera foraminifera = buildForaminifera();
-            SettingsContainer.foraminifera = foraminifera;
+            if (SettingsContainer.foraminifera == null){
+                SettingsContainer.foraminifera = buildForaminifera();
+            }
             float[] clipping = buildClippingVector();
 
-            mRenderer = new MyGLRenderer(foraminifera, clipping);
+            mRenderer = new MyGLRenderer(SettingsContainer.foraminifera, clipping);
             mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
         }
         else
